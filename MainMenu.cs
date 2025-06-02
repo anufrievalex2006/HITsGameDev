@@ -8,15 +8,16 @@ public partial class MainMenu : Control
 
 	public override void _Ready()
 	{
-		_startButton = GetNode<Button>("Button");
 		
-		_startButton.Connect("pressed", this, nameof(OnStartButtonPressed));
+		//_startButton = GetNode<Button>("Button");
+		
+		//_startButton.Connect("pressed", this, nameof(OnStartButtonPressed));
 	}
 
 	private void OnStartButtonPressed()
 	{
 		GD.Print("Кнопка 'Пуск' нажата!");
-		GetTree().ChangeScene("res://GameScene.tscn");
+		//GetTree().ChangeScene("res://GameScene.tscn");
 	}
 	
 }
