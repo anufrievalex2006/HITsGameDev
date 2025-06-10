@@ -146,7 +146,7 @@ function updateObstacles() {
         obstacles[i].x -= obstacleSpeed;
         if (obstacles[i].x + obstacles[i].width < 0) {
             obstacles.splice(i, 1);
-            obstacleSpeed += kAccelerate;
+            if (obstacleSpeed < 25) obstacleSpeed += kAccelerate;
         }
     }
 }
@@ -169,7 +169,7 @@ function updatePlayer() {
 
     // Находим текущий сегмент под игроком
     const currentSegment = platformSegments.find(segment => 
-        player.x >= segment.x && player.x <= segment.x + segment.width
+        player.x + player.width >= segment.x && player.x <= segment.x + segment.width
     );
 
     if (currentSegment && player.y + player.height > currentSegment.y) {
