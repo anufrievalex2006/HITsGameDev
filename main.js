@@ -3,61 +3,73 @@ const ctx = canvas.getContext("2d");
 
 let gameRunning = true;
 let score = 0;
-let lastObstacleTime = 0;
 let animationFrameId;
-let obstacleInterval = 1000;
 let obstacleSpeed = 5;
 const kAccelerate = 0.2;
 
-// Добавляем параметры для генерации карты
+// Параметры платформы
 const platformHeight = 60;
 const platformSegments = [];
 const segmentWidth = 100;
-let currentTerrainY = canvas.height - platformHeight;
 
-function generateInitialTerrain() {
-    const segments = Math.ceil(canvas.width / segmentWidth) + 2;
-    for (let i = 0; i < segments; i++) {
-        platformSegments.push({
-            x: i * segmentWidth,
-            y: currentTerrainY,
-            width: segmentWidth,
-            height: platformHeight
-        });
+// Данные уровня - загружаем из localStorage
+let levelData = {
+    platforms: [],
+    obstacles: []
+};
+
+// Загрузка сохранённого уровня
+function loadLevel() {
+    const savedLevel = localStorage.getItem("runnerLevel");
+    if (savedLevel) {
+        levelData = JSON.parse(savedLevel);
+    } else {
+        // Уровень по умолчанию
+        levelData = {
+            platforms: [
+                {startX: 0, endX: 1000, y: 700},
+                {startX: 1200, endX: 1500, y: 650},
+                {startX: 1700, endX: 2000, y: 600}
+            ],
+            obstacles: [
+                {x: 500, y: 650},
+                {x: 800, y: 650},
+                {x: 1400, y: 600}
+            ]
+        };
     }
 }
 
-function updateTerrain() {
-    // Двигаем сегменты влево
-    platformSegments.forEach(segment => {
-        segment.x -= obstacleSpeed;
+// Генерация террейна из данных уровня
+function generateTerrainFromLevel() {
+    platformSegments.length = 0;
+    
+    // Генерация платформ
+    levelData.platforms.forEach(platform => {
+        const segmentCount = Math.ceil((platform.endX - platform.startX) / segmentWidth);
+        
+        for (let i = 0; i < segmentCount; i++) {
+            platformSegments.push({
+                x: platform.startX + i * segmentWidth,
+                y: platform.y,
+                width: segmentWidth,
+                height: platformHeight
+            });
+        }
     });
-
-    // Удаляем сегменты, которые ушли за пределы экрана
-    while (platformSegments[0] && platformSegments[0].x + segmentWidth < 0) {
-        platformSegments.shift();
-    }
-
-    // Добавляем новые сегменты
-    const lastSegment = platformSegments[platformSegments.length - 1];
-    if (lastSegment.x + segmentWidth < canvas.width + segmentWidth) {
-        // Генерируем новую высоту платформы с плавным переходом
-        const heightVariation = Math.random() * 40 - 20;
-        currentTerrainY = Math.max(
-            Math.min(
-                lastSegment.y + heightVariation,
-                canvas.height - platformHeight
-            ),
-            canvas.height - platformHeight - 100
-        );
-
-        platformSegments.push({
-            x: lastSegment.x + segmentWidth,
-            y: currentTerrainY,
-            width: segmentWidth,
-            height: platformHeight
+    
+    // Генерация препятствий
+    obstacles.length = 0;
+    levelData.obstacles.forEach(obs => {
+        obstacles.push({
+            x: obs.x,
+            y: obs.y - 50, // высота препятствия
+            width: 20,
+            height: 50,
+            color: "red",
+            passed: false
         });
-    }
+    });
 }
 
 function drawTerrain() {
@@ -82,12 +94,6 @@ function gameLoop() {
     updateTerrain();
     updatePlayer();
     updateObstacles();
-    
-    const currentTime = Date.now();
-    if (currentTime - lastObstacleTime > obstacleInterval) {
-        createObstacle();
-        lastObstacleTime = currentTime;
-    }
     
     drawTerrain();
     drawPlayer();
@@ -122,29 +128,22 @@ const player = {
 
 let obstacles = [];
 
-window.onload = () => {
-    generateInitialTerrain();
-    lastObstacleTime = Date.now();
+function initGame() {
+    loadLevel();
+    generateTerrainFromLevel();
     animationFrameId = requestAnimationFrame(gameLoop);
-};
+}
 
-function createObstacle() {
-    const currentSegment = platformSegments.find(segment => 
-        canvas.width >= segment.x && canvas.width <= segment.x + segment.width
-    );
-    
-    if (currentSegment) {
-        const obstacleHeight = 50;
-        obstacles.push({
-            x: canvas.width,
-            y: currentSegment.y - obstacleHeight,
-            width: 20,
-            height: obstacleHeight,
-            color: "red",
-            passed: false
-        });
+function updateTerrain() {
+    // Двигаем сегменты влево
+    platformSegments.forEach(segment => {
+        segment.x -= obstacleSpeed;
+    });
+
+    // Удаляем сегменты, которые ушли за пределы экрана
+    while (platformSegments[0] && platformSegments[0].x + segmentWidth < 0) {
+        platformSegments.shift();
     }
-    obstacleInterval = Math.random() * 1000 + 1000;
 }
 
 function updateObstacles() {
@@ -190,7 +189,7 @@ function detectCollision() {
         if (
             player.x + 2 < obst.x + obst.width - 2 &&
             player.x + player.width - 2 > obst.x + 2 &&
-            player.y + 2< obst.y + obst.height - 2 &&
+            player.y + 2 < obst.y + obst.height - 2 &&
             player.y + player.height - 2 > obst.y + 2
         ) {
             gameRunning = false;
@@ -215,9 +214,8 @@ function resetGame() {
     player.isJumping = false;
     obstacles = [];
     platformSegments.length = 0;
-    generateInitialTerrain();
+    generateTerrainFromLevel();
     gameRunning = true;
     obstacleSpeed = 5;
     score = 0;
-    lastObstacleTime = Date.now();
 }
