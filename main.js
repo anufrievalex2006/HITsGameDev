@@ -182,6 +182,13 @@ function updatePlayer() {
         player.velocityY = 0;
         player.isJumping = false;
     }
+
+    // Проверка падения в пропасть
+    if (player.y + player.height > canvas.height) {
+        gameRunning = false;
+        alert(`Game Over! Score: ${score}`);
+        resetGame();
+    }
 }
 
 function detectCollision() {
