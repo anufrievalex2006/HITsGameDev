@@ -92,6 +92,11 @@ function gameLoop() {
     drawTerrain();
     drawPlayer();
     drawObstacles();
+    
+    // Score
+    ctx.fillStyle = "black";
+    ctx.font = "28px Arial";
+    ctx.fillText(`Score: ${score}`, 10, 30);
 
     detectCollision();
 
@@ -129,11 +134,12 @@ function createObstacle() {
     );
     
     if (currentSegment) {
+        const obstacleHeight = 50;
         obstacles.push({
             x: canvas.width,
-            y: currentSegment.y - 50,
+            y: currentSegment.y - obstacleHeight,
             width: 20,
-            height: 50,
+            height: obstacleHeight,
             color: "red",
             passed: false
         });
@@ -182,10 +188,10 @@ function updatePlayer() {
 function detectCollision() {
     obstacles.forEach(obst => {
         if (
-            player.x < obst.x + obst.width &&
-            player.x + player.width > obst.x &&
-            player.y < obst.y + obst.height &&
-            player.y + player.height > obst.y
+            player.x + 2 < obst.x + obst.width - 2 &&
+            player.x + player.width - 2 > obst.x + 2 &&
+            player.y + 2< obst.y + obst.height - 2 &&
+            player.y + player.height - 2 > obst.y + 2
         ) {
             gameRunning = false;
             alert(`Game Over! Score: ${score}`);
