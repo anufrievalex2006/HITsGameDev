@@ -64,13 +64,13 @@ function drawTerrain() {
     // Рисуем коричневую поверхность под блоками
     ctx.fillStyle = "#8B4513";
     platformSegments.forEach(segment => {
-        ctx.fillRect(segment.x, segment.y + platformHeight - 50, segment.width, canvas.height - (segment.y + platformHeight - 50));
+        ctx.fillRect(segment.x, segment.y + 10, segment.width, canvas.height - (segment.y + 10));
     });
     
     // Рисуем зеленые блоки сверху
     ctx.fillStyle = "#2E8B57";
     platformSegments.forEach(segment => {
-        ctx.fillRect(segment.x, segment.y, segment.width, platformHeight - 50);
+        ctx.fillRect(segment.x, segment.y, segment.width, 10);
     });
 }
 
@@ -80,8 +80,8 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     updateTerrain();
-    drawTerrain();
-    drawPlayer();
+    updatePlayer();
+    updateObstacles();
     
     const currentTime = Date.now();
     if (currentTime - lastObstacleTime > obstacleInterval) {
@@ -89,9 +89,10 @@ function gameLoop() {
         lastObstacleTime = currentTime;
     }
     
+    drawTerrain();
+    drawPlayer();
     drawObstacles();
-    updatePlayer();
-    updateObstacles();
+
     detectCollision();
 
     animationFrameId = requestAnimationFrame(gameLoop);
@@ -183,7 +184,8 @@ function detectCollision() {
         if (
             player.x < obst.x + obst.width &&
             player.x + player.width > obst.x &&
-            player.y + player.height >= obst.y
+            player.y < obst.y + obst.height &&
+            player.y + player.height > obst.y
         ) {
             gameRunning = false;
             alert(`Game Over! Score: ${score}`);
