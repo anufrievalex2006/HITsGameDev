@@ -3,57 +3,55 @@ function loadLevel() {
     if (savedLevel) {
         levelData = JSON.parse(savedLevel);
     } else {
-        //потом добавим случайную генерацию
-        levelData = {
-            "platforms": [
-                {
-                    "startX": 2.0287958115183247,
-                    "endX": 250.5562827225131,
-                    "y": 553.0335678469717
-                },
-                {
-                    "startX": 250.5562827225131,
-                    "endX": 497.05497382198956,
-                    "y": 652.9793933614847
-                },
-                {
-                    "startX": 550.8180628272252,
-                    "endX": 697.9057591623036,
-                    "y": 600.7854622594612
-                },
-                {
-                    "startX": 749.640052356021,
-                    "endX": 949.4764397905759,
-                    "y": 500.8396367449482
-                },
-                {
-                    "startX": 949.4764397905759,
-                    "endX": 1148.2984293193717,
-                    "y": 603.0064806042282
-                },
-                {
-                    "startX": 1149.3128272251308,
-                    "endX": 1350.163612565445,
-                    "y": 589.6803705356264
-                },
-                {
-                    "startX": 1350.163612565445,
-                    "endX": 1545.9424083769634,
-                    "y": 573.0227329498742
-                },
-                {
-                    "startX": 1545.163612565445,
-                    "endX": 2045.9424083769634,
-                    "y": 573.0227329498742
-                }
-            ],
-            "obstacles": [
-                {
-                    "x": 898.7565445026178,
-                    "y": 507.5026917792491
-                }
-            ]
-        };
+        levelData.platforms.push({
+            "startX": 0,
+            "endX": 250,
+            "y": 553
+        });
+        levelData.obstacles.push({
+            "x": 200,
+            "y": 553
+        });
+
+        const MIN_GAP = 10;
+        const MAX_GAP = 100;
+        const MIN_LENGTH = 150;
+        const MAX_LENGTH = 600;
+        const MAX_Y = 700;
+        const MIN_Y = 200;
+        const MAX_DY = 80;
+
+        for (var i = 0; i < 50; ++i) {
+            const prev = levelData.platforms[i];
+
+            const gap = MIN_GAP + Math.floor((MAX_GAP - MIN_GAP) * Math.random());
+            const length = MIN_LENGTH + Math.floor((MAX_LENGTH - MIN_LENGTH) * Math.random());
+            const startX = prev.endX + gap;
+            const endX = startX + length;
+
+            let dy = randomSign() * Math.floor(MAX_DY * Math.random());
+            let newY = prev.y + dy;
+
+            newY = Math.max(MIN_Y, Math.min(MAX_Y, newY));
+
+            levelData.platforms.push({
+                "startX": startX,
+                "endX": endX,
+                "y": newY
+            });
+        }
+
+        for (var i = 0; i < 25; ++i) {
+            const platIndex = 1 + Math.floor(49 * Math.random()); // Индексы 1-50
+            const platform = levelData.platforms[platIndex];
+
+            const posX = platform.startX + Math.floor(0.4 * (platform.endX - platform.startX));
+
+            levelData.obstacles.push({
+                "x": posX,
+                "y": platform.y
+            });
+        }
     }
     player.y = levelData.platforms[0].y - player.height
 }
@@ -85,4 +83,12 @@ function generateTerrainFromLevel() {
             passed: false
         });
     });
+}
+
+function randomSign(){
+    if(Math.random() < 0.5){
+        return -1;
+    }else{
+        return 1;
+    }
 }
