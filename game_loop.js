@@ -62,7 +62,6 @@ function updatePlayer() {
     );
 
     if (currentSegment && player.y + player.height > currentSegment.y) {
-        //это надо исправить
         if(player.y - currentSegment.y > 0){
             player.x -= obstacleSpeed;
         }else{
@@ -104,7 +103,7 @@ function resetGame() {
     cancelAnimationFrame(animationFrameId);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     player.x = 20;
-    player.y = 10;
+    player.y = levelData.platforms[0].y - player.height;
     player.velocityY = 0;
     player.isJumping = false;
     obstacles = [];

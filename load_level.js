@@ -55,6 +55,7 @@ function loadLevel() {
             ]
         };
     }
+    player.y = levelData.platforms[0].y - player.height
 }
 
 function generateTerrainFromLevel() {
