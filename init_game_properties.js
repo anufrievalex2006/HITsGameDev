@@ -18,7 +18,7 @@ let levelData = {
 
 const player = {
     x: 20,
-    y: canvas.height - platformHeight - 50,
+    y: 10,
     width: 50,
     height: 50,
     color: "blue",
