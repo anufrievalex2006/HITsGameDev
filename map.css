@@ -1,0 +1,110 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    opacity: 0;
+    animation: fadeIn 0.75s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.levelBtn {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgb(211, 189, 133);
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0,0,0,0.7);
+    
+    user-select: none;
+    -webkit-user-select: none;
+
+    transition: all 0.3s ease;
+}
+
+.levelBtn:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.9);
+}
+
+.level-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    max-width: 250px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.level-tooltip.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.level-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(0, 0, 0, 0.9);
+}
+
+.level-tooltip.tooltip-bottom::before {
+    bottom: auto;
+    top: -8px;
+    border-top: none;
+    border-bottom: 8px solid rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-content {
+    line-height: 1.4;
+}

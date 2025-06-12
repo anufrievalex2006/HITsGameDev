@@ -3,19 +3,57 @@ function loadLevel() {
     if (savedLevel) {
         levelData = JSON.parse(savedLevel);
     } else {
-        levelData = {
-            platforms: [
-                {startX: 0, endX: 1000, y: 700},
-                {startX: 1200, endX: 1500, y: 650},
-                {startX: 1700, endX: 2000, y: 600}
-            ],
-            obstacles: [
-                {x: 500, y: 650},
-                {x: 800, y: 650},
-                {x: 1400, y: 600}
-            ]
-        };
+        levelData.platforms.push({
+            "startX": 0,
+            "endX": 250,
+            "y": 553
+        });
+        levelData.obstacles.push({
+            "x": 200,
+            "y": 553
+        });
+
+        const MIN_GAP = 10;
+        const MAX_GAP = 100;
+        const MIN_LENGTH = 150;
+        const MAX_LENGTH = 600;
+        const MAX_Y = 700;
+        const MIN_Y = 200;
+        const MAX_DY = 80;
+
+        for (var i = 0; i < 50; ++i) {
+            const prev = levelData.platforms[i];
+
+            const gap = MIN_GAP + Math.floor((MAX_GAP - MIN_GAP) * Math.random());
+            const length = MIN_LENGTH + Math.floor((MAX_LENGTH - MIN_LENGTH) * Math.random());
+            const startX = prev.endX + gap;
+            const endX = startX + length;
+
+            let dy = randomSign() * Math.floor(MAX_DY * Math.random());
+            let newY = prev.y + dy;
+
+            newY = Math.max(MIN_Y, Math.min(MAX_Y, newY));
+
+            levelData.platforms.push({
+                "startX": startX,
+                "endX": endX,
+                "y": newY
+            });
+        }
+
+        for (var i = 0; i < 25; ++i) {
+            const platIndex = 1 + Math.floor(49 * Math.random()); // Индексы 1-50
+            const platform = levelData.platforms[platIndex];
+
+            const posX = platform.startX + Math.floor(0.4 * (platform.endX - platform.startX));
+
+            levelData.obstacles.push({
+                "x": posX,
+                "y": platform.y
+            });
+        }
     }
+    player.y = levelData.platforms[0].y - player.height
 }
 
 function generateTerrainFromLevel() {
@@ -45,4 +83,12 @@ function generateTerrainFromLevel() {
             passed: false
         });
     });
+}
+
+function randomSign(){
+    if(Math.random() < 0.5){
+        return -1;
+    }else{
+        return 1;
+    }
 }
