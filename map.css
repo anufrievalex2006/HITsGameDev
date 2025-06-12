@@ -1,0 +1,43 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.map {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.levelBtn {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgb(211, 189, 133);
+    transform: translate(-50%, -50%);
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 3px rgba(0,0,0,0.7);
+    
+    user-select: none;
+    -webkit-user-select: none;
+}
