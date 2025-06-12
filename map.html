@@ -8,8 +8,12 @@
 <body>
     <div id="map" class="map">
         <img src="map.png" id="mapImage", class="image"/>
-        <div id="firstLevelBtn" class="levelBtn"></div>
-        <div id="secondLevelBtn" class="levelBtn"></div>
+        <div id="firstLevelBtn" class="levelBtn" data-description="Первый уровень: Начальная локация для новичков."></div>
+        <div id="secondLevelBtn" class="levelBtn" data-description="Второй уровень: Увеличенная сложность."></div>
+    
+        <div id="levelTooltip" class="level-tooltip">
+            <div class="tooltip-content"></div>
+        </div>
     </div>
     <script src="map.js"></script>
 </body>
