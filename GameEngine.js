@@ -21,15 +21,20 @@ export class GameEngine {
         this.lastObstacleTime = 0;
         this.levelDistance = 0;
 
+        this.keyHandler = null;
         this.setupEventListeners();
     }
 
     setupEventListeners() {
-        document.addEventListener("keydown", (e) => {
+        if (this.keyHandler)
+            document.removeEventListener("keydown", this.keyHandler);
+
+        this.keyHandler = (e) => {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
-        });
+        };
+        document.addEventListener("keydown", this.keyHandler);
     }
 
     generatePlatforms() {
@@ -58,7 +63,7 @@ export class GameEngine {
 
         enemies.forEach(enemyData => {
             if (!enemyData.spawned && enemyData.x <= viewportEnd + 200) {
-                const screenX = enemyData.x - this.levelDistance + this.canvas.width;
+                const screenX = enemyData.x - this.levelDistance;
 
                 let enemy;
                 switch (enemyData.type) {
@@ -91,17 +96,18 @@ export class GameEngine {
         });
     }
 
-    update() {
+    update(deltaTime) {
         if (!this.player) return;
         
-        this.player.update(this.platformManager.entities, this.speed);
-        this.platformManager.update(this.speed);
-        this.enemyManager.update(this.speed);
+        const speedFactor = deltaTime / 16.67;
+        this.player.update(this.platformManager.entities, this.speed, deltaTime);
+        this.platformManager.update(this.speed * speedFactor);
+        this.enemyManager.update(this.speed * speedFactor);
 
         if (this.speed < config.obstacles.maxSpeed) {
             this.speed += config.obstacles.acceleration;
         }
-        this.levelDistance += this.speed;
+        this.levelDistance += this.speed * speedFactor;
 
         this.spawnEnemy();
         this.checkCollisions();
@@ -149,10 +155,17 @@ export class GameEngine {
     }
 
     gameOver() {
+        if (!this.gameRunning) return;
+
         this.gameRunning = false;
         cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+
         alert(`Game Over! Score: ${this.score}`);
         this.resetLevel();
+        setTimeout(() => {
+            this.start();
+        }, 100);
     }
 
     loadLevel(levelId) {
@@ -167,6 +180,7 @@ export class GameEngine {
 
     resetLevel() {
         this.enemyManager.clear();
+        this.platformManager.clear();
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
@@ -176,19 +190,23 @@ export class GameEngine {
         if (currentLevel) {
             currentLevel.enemies.forEach(enemy => {
                 enemy.spawned = false;
+                if (enemy.passed) enemy.passed = false;
             });
         }
         
         this.score = 0;
         this.speed = config.obstacles.initialSpeed;
         this.levelDistance = 0;
+        this.lastObstacleTime = 0;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     start() {
-        if (!this.gameRunning && this.player) {
-            this.gameRunning = true;
-            this.gameLoop();
-        }
+        if (this.gameRunning) return;
+
+        this.gameRunning = true;
+        this.lastTime = performance.now();
+        this.gameLoop();
     }
 
     stop() {
@@ -201,7 +219,11 @@ export class GameEngine {
     gameLoop() {
         if (!this.gameRunning) return;
 
-        this.update();
+        const currentTime = performance.now();
+        const deltaTime = currentTime - this.lastTime;
+        this.lastTime = currentTime;
+
+        this.update(deltaTime);
         this.draw();
 
         this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
