@@ -63,7 +63,7 @@ export class GameEngine {
 
         enemies.forEach(enemyData => {
             if (!enemyData.spawned && enemyData.x <= viewportEnd + 200) {
-                const screenX = enemyData.x - this.levelDistance;
+                const screenX = enemyData.x - this.levelDistance + this.canvas.width;
 
                 let enemy;
                 switch (enemyData.type) {
