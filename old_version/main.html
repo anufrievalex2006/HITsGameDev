@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Runner Game</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="main.css" rel="stylesheet">
+</head>
+<body>
+    <div id="mainMenu" class="screen">
+        <h1 class="game-title">НАШЕ ЧУДО</h1>
+        <button id="playBtn" class="btn">ИГРАТЬ</button>
+        <button id="editorBtn" class="btn">РЕДАКТОР УРОВНЕЙ</button>
+        
+        <div class="instructions">
+            <h3>Как играть:</h3>
+            <p>• Нажми ПРОБЕЛ, чтобы прыгать</p>
+            <p>• Избегай красных препятствий</p>
+            <p>• Набери как можно больше очков!</p>
+            <h3>Редактор уровней:</h3>
+            <p>• Создай свою трассу с платформами и препятствиями</p>
+            <p>• Сохрани уровень и играй на нём!</p>
+        </div>
+    </div>
+    
+    <div id="gameScreen" class="screen">
+        <button id="backFromGame" class="back-btn">← МЕНЮ</button>
+        <canvas id="gameCanvas" width="1550" height="820"></canvas>
+    </div>
+    
+    <div id="editorScreen" class="screen">
+        <button id="backFromEditor" class="back-btn">← МЕНЮ</button>
+        <canvas id="editorCanvas" width="1550" height="820"></canvas>
+        
+        <div id="editorPanel">
+            <h3 class="editor-title">РЕДАКТОР УРОВНЕЙ</h3>
+            <button id="addPlatformBtn" class="editor-btn">Добавить платформу</button>
+            <button id="addObstacleBtn" class="editor-btn">Добавить препятствие</button>
+            <button id="clearAllBtn" class="editor-btn">Очистить всё</button>
+            <button id="saveLevelBtn" class="editor-btn" style="background: #2ecc71;">Сохранить уровень</button>
+            <div id="editorOutput"></div>
+        </div>
+    </div>
+
+    <script src="buttons_setting.js"></script>
+    <script src="editor_settings.js"></script>
+    <script src="init_game_properties.js"></script>
+    <script src="load_level.js"></script>
+    <script src="draw_objects.js"></script>
+    <script src="game_loop.js"></script>
+</body>
+</html>

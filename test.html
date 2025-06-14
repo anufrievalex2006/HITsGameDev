@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Runner Game</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="main.css" rel="stylesheet">
+    <style>
+        .screen { display: none; }
+        #mainMenu { display: block; }
+        .level-btn { display: block; margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="mainMenu" class="screen">
+        <button id="playBtn" class="btn">ИГРАТЬ</button>
+    </div>
+    
+    <div id="levelSelect" class="screen">
+        <h2>Выберите уровень</h2>
+        <button class="level-btn" data-level="weather_hills">
+            Weather Hills
+            <small>Босс: King-Wizard of Angmar</small>
+        </button>
+        <button class="level-btn" data-level="moria">
+            Moria
+            <small>Босс: Balrog</small>
+        </button>
+        <button id="backFromLevels" class="back-btn">← МЕНЮ</button>
+    </div>
+    
+    <div id="gameScreen" class="screen">
+        <button id="backFromGame" class="back-btn">← МЕНЮ</button>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

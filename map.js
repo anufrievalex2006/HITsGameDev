@@ -1,3 +1,5 @@
+let progress = { completedLevels: [] }
+
 const startWidthMap = 736;
 const startHeightMap = 552;
 const levelBtns = [
@@ -60,6 +62,12 @@ function initTooltips() {
 }
 
 window.addEventListener('load', function() {
+    const savedProgress = localStorage.getItem("progress");
+    if (savedProgress) {
+        progress = JSON.parse(savedProgress);
+    }else{
+        progress = { completedLevels: [] }
+    }
     updateAllButtons();
     initTooltips();
 });
