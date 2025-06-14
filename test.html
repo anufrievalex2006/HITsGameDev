@@ -4,6 +4,7 @@
     <title>Runner Game</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link href="main.css" rel="stylesheet">
+    <link href="map.css" rel="stylesheet">
     <style>
         .screen { display: none; }
         #mainMenu { display: block; }
@@ -14,24 +15,24 @@
     <div id="mainMenu" class="screen">
         <button id="playBtn" class="btn">ИГРАТЬ</button>
     </div>
-    
-    <div id="levelSelect" class="screen">
-        <h2>Выберите уровень</h2>
-        <button class="level-btn" data-level="weather_hills">
-            Weather Hills
-            <small>Босс: King-Wizard of Angmar</small>
-        </button>
-        <button class="level-btn" data-level="moria">
-            Moria
-            <small>Босс: Balrog</small>
-        </button>
+    <div id="map" class="map">
+        <img src="map.png" id="mapImage", class="image"/>
+        <div id="firstLevelBtn" class="levelBtn" data-level="weather_hills"
+            data-description="Первый уровень: Начальная локация для новичков."></div>
+        <div id="secondLevelBtn" class="levelBtn" data-level="moria" data-description="Второй уровень: Увеличенная сложность.">
+        </div>
         <button id="backFromLevels" class="back-btn">← МЕНЮ</button>
+        <div id="levelTooltip" class="level-tooltip">
+            <div class="tooltip-content"></div>
+        </div>
     </div>
     
     <div id="gameScreen" class="screen">
         <button id="backFromGame" class="back-btn">← МЕНЮ</button>
         <canvas id="gameCanvas"></canvas>
     </div>
+
+    <script src="map.js"></script>
     <script type="module" src="main.js"></script>
 </body>
 </html>
