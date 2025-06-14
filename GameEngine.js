@@ -96,18 +96,17 @@ export class GameEngine {
         });
     }
 
-    update(deltaTime) {
+    update() {
         if (!this.player) return;
         
-        const speedFactor = deltaTime / 16.67;
-        this.player.update(this.platformManager.entities, this.speed, deltaTime);
-        this.platformManager.update(this.speed * speedFactor);
-        this.enemyManager.update(this.speed * speedFactor);
+        this.player.update(this.platformManager.entities, this.speed);
+        this.platformManager.update(this.speed);
+        this.enemyManager.update(this.speed);
 
         if (this.speed < config.obstacles.maxSpeed) {
             this.speed += config.obstacles.acceleration;
         }
-        this.levelDistance += this.speed * speedFactor;
+        this.levelDistance += this.speed;
 
         this.spawnEnemy();
         this.checkCollisions();

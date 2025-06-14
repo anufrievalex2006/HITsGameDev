@@ -10,10 +10,9 @@ export class Player {
         this.isJumping = false;
     }
 
-    update(platformSegments, obstacleSpeed, deltaTime) {
-        const frameSpeed = deltaTime / 16.67;
-        this.y += this.velocityY * frameSpeed;
-        this.velocityY += config.player.gravity * frameSpeed;
+    update(platformSegments, obstacleSpeed) {
+        this.y += this.velocityY;
+        this.velocityY += config.player.gravity;
 
         const currentSegment = platformSegments.find(segment => 
             this.x + this.width >= segment.x && 
@@ -22,7 +21,7 @@ export class Player {
 
         if (currentSegment && this.y + this.height > currentSegment.y) {
             if (this.y - currentSegment.y > 0) {
-                this.x -= obstacleSpeed * frameSpeed;
+                this.x -= obstacleSpeed;
             } else {
                 this.y = currentSegment.y - this.height;
                 this.velocityY = 0;
