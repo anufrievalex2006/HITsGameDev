@@ -56,11 +56,11 @@ const levels = [
 
 const game = new GameEngine(canvas, levels);
 
-document.querySelectorAll(".level-btn").forEach(button => {
+document.querySelectorAll(".levelBtn").forEach(button => {
     button.addEventListener("click", () => {
         const levelId = button.dataset.level;
         if (game.loadLevel(levelId)) {
-            $("#levelSelect").hide();
+            $("#map").hide();
             $("#gameScreen").show();
             game.start();
         }
@@ -75,10 +75,10 @@ document.getElementById("backFromGame").addEventListener("click", () => {
 
 document.getElementById("playBtn").addEventListener("click", () => {
     $("#mainMenu").hide();
-    $("#levelSelect").show();
+    $("#map").show();
 });
 
 document.getElementById("backFromLevels").addEventListener("click", () => {
-    $("#levelSelect").hide();
+    $("#map").hide();
     $("#mainMenu").show();
 });
