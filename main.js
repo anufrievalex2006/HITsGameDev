@@ -11,30 +11,28 @@ const levels = [
         boss: "King-Wizard of Angmar",
         spawn: { x: 50, y: 300 },
         platforms: [
-            { x: 0, y: 350, width: 1000 },
-            { x: 1200, y: 300, width: 300 },
-            { x: 1600, y: 250, width: 200 },
-            { x: 1800, y: 250, width: 800 }
+            { x: 0, y: 350, width: 1500 },
+            { x: 1600, y: 350, width: 400 },
+            { x: 2100, y: 300, width: 300 },
+            { x: 2500, y: 350, width: 500 },
+            { x: 3100, y: 300, width: 400 },
+            { x: 3600, y: 250, width: 600 },
+            { x: 4200, y: 350, width: 300 },
         ],
         enemies: [
-            { 
-                type: "Stone", 
-                x: 300, 
-                y: 350,
-                speed: 1.0
-            },
-            { 
-                type: "Nazgul", 
-                x: 800,
-                y: 100,
-                speed: 1.2,
-                speedX: -4
-            },
-            { 
-                type: "Stone", 
-                x: 950,
-                speed: 0.8
-            }
+            { type: "Stone", x: 300, y: 350, speed: 1.0 },
+            { type: "Stone", x: 1000, y: 350, speed: 1.2 },
+            { type: "Stone", x: 1500, y: 350, speed: 0.9 },
+            { type: "Stone", x: 1900, y: 350, speed: 1.1 },
+            { type: "Stone", x: 2500, y: 350, speed: 0.8 },
+            { type: "Stone", x: 2900, y: 350, speed: 1.3 },
+            { type: "Stone", x: 3300, y: 300, speed: 1.3 },
+            
+            // Летающие враги
+            { type: "Nazgul", x: 800, y: 100, speed: 1.2, speedX: -4 },
+            { type: "Nazgul", x: 1500, y: 150, speed: 1.5, speedX: -3 },
+            { type: "Nazgul", x: 2400, y: 200, speed: 1.8, speedX: -5 },
+            { type: "Nazgul", x: 3200, y: 180, speed: 2.0, speedX: -4 },
         ]
     },
     {
