@@ -3,6 +3,8 @@ import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { BulletEnemy } from './Enemy/Bullet.js';
+import { BossEnemy } from './Enemy/Boss.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
 
@@ -20,6 +22,7 @@ export class GameEngine {
         this.animationFrameId = null;
         this.lastObstacleTime = 0;
         this.levelDistance = 0;
+        this.BossHP = 0
 
         this.keyHandler = null;
         this.setupEventListeners();
@@ -33,7 +36,17 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
+            if (e.key === "q" && this.gameRunning) {
+                const screenX = 80;
+                let enemy = new BulletEnemy(
+                            screenX,
+                            this.player?.y,
+                            {type: "Bullet", speed: -5}
+                        );
+                this.enemyManager.addInStart(enemy)
+            }
         };
+
         document.addEventListener("keydown", this.keyHandler);
     }
 
@@ -89,7 +102,7 @@ export class GameEngine {
                         );
                 }
 
-                enemy.originalX = enemyData.x; // Сохраняем оригинальную позицию
+                enemy.originalX = enemyData.x;
                 this.enemyManager.add(enemy);
                 enemyData.spawned = true;
             }
@@ -122,6 +135,20 @@ export class GameEngine {
             this.player.draw(this.ctx);
         }
 
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillRect(this.canvas.width / 4, 10, this.BossHP, 10);
+
+        if(this.checkDistanceForSpawnBoss()){
+            let boss = new BossEnemy(
+                this.canvas.width,
+                0,
+                {y: 0, type: "Boss", speed: 0.1}
+            )
+            console.log("spawn boss")
+            this.enemyManager.add(boss)
+            this.BossHP = this.canvas.width / 2
+        }
+
         this.ctx.fillStyle = config.colors.text;
         this.ctx.font = "28px Arial";
         this.ctx.fillText(`Score: ${this.score}`, 10, 30);
@@ -129,6 +156,20 @@ export class GameEngine {
 
     checkCollisions() {
         if (!this.player) return;
+
+        if(this.BossHP > 0){
+            this.enemyManager.entities.forEach(enemy => {
+                if(enemy.type != "Boss"){
+                    if(this.isColliding(enemy, this.enemyManager.entities[this.enemyManager.entities.length - 1])){
+                        this.BossHP -= 10;
+                        if(this.BossHP <= 0){
+                            this.BossHP = 0;
+                            this.gameWin()
+                        }
+                    }
+                }
+            });
+        }
         
         this.enemyManager.entities.forEach(enemy => {
             if (this.isColliding(this.player, enemy)) {
@@ -197,6 +238,7 @@ export class GameEngine {
         this.speed = config.obstacles.initialSpeed;
         this.levelDistance = 0;
         this.lastObstacleTime = 0;
+        this.BossHP = 0
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -226,6 +268,14 @@ export class GameEngine {
         this.draw();
 
         this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+    }
+
+    checkDistanceForSpawnBoss(){
+        if(this.levelDistance >= 4200 && this.levelDistance <= 4400 && this.BossHP == 0){
+            return true
+        }else{
+            return false
+        }
     }
 
     checkLevelCompletion() {
@@ -288,5 +338,8 @@ export class GameEngine {
     gameWin() {
         this.gameRunning = false;
         alert(`Победа! Игра завершена. Счет: ${this.score}`);
+        this.stop()
+        $("#gameScreen").hide();
+        $("#map").show();
     }
 }

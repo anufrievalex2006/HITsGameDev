@@ -1,10 +1,10 @@
-export class StoneEnemy {
+export class BossEnemy {
     constructor(x, y, data) {
         this.x = x;
         this.y = data.y;
         this.width = 40;
-        this.height = 40;
-        this.type = data.type || 'Stone';
+        this.height = 1200;
+        this.type = data.type || 'Boss';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
     }
@@ -14,7 +14,7 @@ export class StoneEnemy {
     }
 
     draw(ctx) {
-        ctx.fillStyle = 'gray';
+        ctx.fillStyle = 'red';
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
