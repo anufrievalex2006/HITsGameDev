@@ -67,7 +67,7 @@ document.querySelectorAll(".levelBtn").forEach(button => {
 document.getElementById("backFromGame").addEventListener("click", () => {
     game.stop();
     $("#gameScreen").hide();
-    $("#mainMenu").show();
+    $("#map").show();
 });
 
 document.getElementById("playBtn").addEventListener("click", () => {

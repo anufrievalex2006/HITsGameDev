@@ -338,5 +338,8 @@ export class GameEngine {
     gameWin() {
         this.gameRunning = false;
         alert(`Победа! Игра завершена. Счет: ${this.score}`);
+        this.stop()
+        $("#gameScreen").hide();
+        $("#map").show();
     }
 }
