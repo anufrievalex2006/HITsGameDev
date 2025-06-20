@@ -157,18 +157,28 @@ export class GameEngine {
     checkCollisions() {
         if (!this.player) return;
 
-        if(this.BossHP > 0){
+        const boss = this.enemyManager.entities.find(e => e.type === "Boss");
+
+        if(this.BossHP > 0 && boss){
             this.enemyManager.entities.forEach(enemy => {
-                if(enemy.type != "Boss"){
-                    if(this.isColliding(enemy, this.enemyManager.entities[this.enemyManager.entities.length - 1])){
+                if(enemy.type != "Boss" && enemy.type === "Bullet"){
+                    if(this.isColliding(enemy, boss) && !enemy.hitBoss){
                         this.BossHP -= 10;
+                        enemy.hitBoss = true;
+                        enemy.shouldRemove = true;
+
                         if(this.BossHP <= 0){
                             this.BossHP = 0;
-                            this.gameWin()
                         }
                     }
                 }
             });
+
+            this.enemyManager.entities = this.enemyManager.entities.filter(e => !e.shouldRemove);
+            if (this.BossHP <= 0) {
+                this.gameWin();
+                return;
+            }
         }
         
         this.enemyManager.entities.forEach(enemy => {
