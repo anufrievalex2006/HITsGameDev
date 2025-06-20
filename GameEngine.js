@@ -3,6 +3,7 @@ import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { BulletEnemy } from './Enemy/Bullet.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
 
@@ -33,7 +34,17 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
+            if (e.key === "q" && this.gameRunning) {
+                const screenX = 80;
+                let enemy = new BulletEnemy(
+                            screenX,
+                            this.player?.y,
+                            {type: "Bullet", speed: -5}
+                        );
+                this.enemyManager.addInStart(enemy)
+            }
         };
+
         document.addEventListener("keydown", this.keyHandler);
     }
 
@@ -89,7 +100,7 @@ export class GameEngine {
                         );
                 }
 
-                enemy.originalX = enemyData.x; // Сохраняем оригинальную позицию
+                enemy.originalX = enemyData.x;
                 this.enemyManager.add(enemy);
                 enemyData.spawned = true;
             }
@@ -224,8 +235,13 @@ export class GameEngine {
 
         this.update(deltaTime);
         this.draw();
+        this.checkDistanceForSpawnBoss()
 
         this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+    }
+
+    checkDistanceForSpawnBoss(){
+        
     }
 
     checkLevelCompletion() {

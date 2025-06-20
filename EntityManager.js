@@ -7,6 +7,10 @@ export class EntityManager {
         this.entities.push(entity);
     }
 
+    addInStart(entity) {
+        this.entities.unshift(entity);
+    }
+
     update(...args) {
         this.entities.forEach(entity => entity.update(...args));
         this.entities = this.entities.filter(entity => !entity.isOutOfBounds?.());
