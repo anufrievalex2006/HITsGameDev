@@ -156,6 +156,20 @@ export class GameEngine {
 
     checkCollisions() {
         if (!this.player) return;
+
+        if(this.BossHP > 0){
+            this.enemyManager.entities.forEach(enemy => {
+                if(enemy.type != "Boss"){
+                    if(this.isColliding(enemy, this.enemyManager.entities[this.enemyManager.entities.length - 1])){
+                        this.BossHP -= 10;
+                        if(this.BossHP <= 0){
+                            this.BossHP = 0;
+                            this.gameWin()
+                        }
+                    }
+                }
+            });
+        }
         
         this.enemyManager.entities.forEach(enemy => {
             if (this.isColliding(this.player, enemy)) {

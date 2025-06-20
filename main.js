@@ -17,7 +17,7 @@ const levels = [
             { x: 2500, y: 350, width: 500 },
             { x: 3100, y: 300, width: 400 },
             { x: 3600, y: 250, width: 600 },
-            { x: 4200, y: 350, width: 2000 },
+            { x: 4200, y: 350, width: 3000 },
         ],
         enemies: [
             { type: "Stone", x: 300, y: 310, speed: 1.0 },
