@@ -1,7 +1,7 @@
 export class BossEnemy {
     constructor(x, y, data) {
         this.x = x;
-        this.y = y;
+        this.y = data.y;
         this.width = 40;
         this.height = 1200;
         this.type = data.type || 'Boss';

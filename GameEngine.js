@@ -4,6 +4,7 @@ import { Platform } from "./Platform.js";
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
 import { BulletEnemy } from './Enemy/Bullet.js';
+import { BossEnemy } from './Enemy/Boss.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
 
@@ -21,6 +22,7 @@ export class GameEngine {
         this.animationFrameId = null;
         this.lastObstacleTime = 0;
         this.levelDistance = 0;
+        this.BossHP = 0
 
         this.keyHandler = null;
         this.setupEventListeners();
@@ -133,6 +135,20 @@ export class GameEngine {
             this.player.draw(this.ctx);
         }
 
+        this.ctx.fillStyle = 'red';
+        this.ctx.fillRect(this.canvas.width / 4, 10, this.BossHP, 10);
+
+        if(this.checkDistanceForSpawnBoss()){
+            let boss = new BossEnemy(
+                this.canvas.width,
+                0,
+                {y: 0, type: "Boss", speed: 0.1}
+            )
+            console.log("spawn boss")
+            this.enemyManager.add(boss)
+            this.BossHP = this.canvas.width / 2
+        }
+
         this.ctx.fillStyle = config.colors.text;
         this.ctx.font = "28px Arial";
         this.ctx.fillText(`Score: ${this.score}`, 10, 30);
@@ -208,6 +224,7 @@ export class GameEngine {
         this.speed = config.obstacles.initialSpeed;
         this.levelDistance = 0;
         this.lastObstacleTime = 0;
+        this.BossHP = 0
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -235,13 +252,16 @@ export class GameEngine {
 
         this.update(deltaTime);
         this.draw();
-        this.checkDistanceForSpawnBoss()
 
         this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
     }
 
     checkDistanceForSpawnBoss(){
-        
+        if(this.levelDistance >= 4200 && this.levelDistance <= 4400 && this.BossHP == 0){
+            return true
+        }else{
+            return false
+        }
     }
 
     checkLevelCompletion() {

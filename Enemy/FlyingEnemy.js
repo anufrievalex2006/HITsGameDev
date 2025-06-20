@@ -1,7 +1,7 @@
 export class FlyingEnemy {
     constructor(x, y, data) {
         this.x = x;
-        this.y = y;
+        this.y = data.y;
         this.width = 60;
         this.height = 30;
         this.type = data.type || 'Nazgul';
