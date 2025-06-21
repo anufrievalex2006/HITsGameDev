@@ -90,7 +90,7 @@ export class GameEngine {
                     case 'Nazgul':
                         enemy = new FlyingEnemy(
                             screenX,
-                            50,
+                            enemyData.y,
                             enemyData
                         );
                         break;
@@ -281,7 +281,7 @@ export class GameEngine {
     }
 
     checkDistanceForSpawnBoss(){
-        if(this.levelDistance >= 4200 && this.levelDistance <= 4400 && this.BossHP == 0){
+        if(this.levelDistance >= 16000 && this.levelDistance <= 16500 && this.BossHP == 0){
             return true
         }else{
             return false

@@ -5,14 +5,14 @@ export const config = {
     },
     player: {
         width: 30,
-        height: 50,
+        height: 30,
         jumpForce: -10,
         gravity: 0.5,
     },
     obstacles: {
         initialSpeed: 5,
-        maxSpeed: 25,
-        acceleration: 0.01,
+        maxSpeed: 20,
+        acceleration: 0.003,
         spawnInterval: 1500,
     },
     platform: {
