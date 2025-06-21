@@ -190,7 +190,14 @@ class LevelGenerator {
             return null;
         }
 
-        this.seed = this.hashCode(levelId) + 12345;
+        let abc = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'w', 'z'];
+
+        let randomId = levelId;
+        for(let i = 0; i < 10; ++i){
+            randomId += abc[Math.floor[Math.random() * 10]]
+        }
+
+        this.seed = this.hashCode(randomId) + 12345*Math.random();
         const platforms = this.generatePlatforms(config);
         const enemies = this.generateEnemies(config, platforms);
 
