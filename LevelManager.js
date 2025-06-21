@@ -20,6 +20,26 @@ export class LevelManager {
         return this.currentLevel?.enemies || [];
     }
 
+    generateEnemies(platforms) {
+        const enemies = [];
+        platforms.forEach(platform => {
+            if (Math.random() > 0.7) { // 30% шанс появления врага на платформе
+                const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+                enemies.push({
+                    type,
+                    x: platform.x + platform.width / 2,
+                    y: type === "Flying" ? platform.y - 100 : platform.y - 40,
+                    speed: 1 + Math.random() * 2
+                });
+            }
+        });
+        return enemies;
+    }
+
+    generateLevel(){
+        generatePlatforms(0,0,0);
+    }
+
     generatePlatforms(prevX, prevY, count) {
         const platforms = [];
         let currentX = prevX;
@@ -46,14 +66,14 @@ export class LevelManager {
 
             currentY = Math.max(100, Math.min(350, currentY));
 
-            platforms.push({ x: currentX, y: currentY, width: 100 + Math.random() * 100 });
+            platforms.push({ x: currentX, y: currentY, width: 100 + Math.random() * 500 });
         }
         return platforms;
     }
 
     getPlatforms() {
-        return this.generatePlatforms(0, 700, 20);
-        //return this.currentLevel?.platforms || [];
+        //return this.generatePlatforms(0, 700, 20);
+        return this.currentLevel?.platforms || [];
     }
 
     getSpawnPoint() {
