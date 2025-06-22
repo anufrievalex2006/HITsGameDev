@@ -281,7 +281,11 @@ export class GameEngine {
     }
 
     checkDistanceForSpawnBoss(){
-        if(this.levelDistance >= 16000 && this.levelDistance <= 16500 && this.BossHP == 0){
+        const currentLevel = this.levelManager.getCurrentLevel()
+        const levelLength = currentLevel ? currentLevel.width : 0
+        const spawnPoint = levelLength * 0.6
+        
+        if(this.levelDistance >= spawnPoint && this.levelDistance <= spawnPoint + 500 && this.BossHP == 0){
             return true
         }else{
             return false
