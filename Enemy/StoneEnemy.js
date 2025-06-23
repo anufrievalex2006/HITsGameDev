@@ -9,6 +9,7 @@ export class StoneEnemy {
         this.type = data.type || 'Stone';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
+        this.boundPlatform = null;
 
         this.sprite = new Image();
         this.sprite.src = config.enemies.stone.sprite.src;
@@ -29,7 +30,22 @@ export class StoneEnemy {
     }
 
     update(speed) {
+        if(
+            this.originalX < this.boundPlatform?.x
+            || this.originalX > this.boundPlatform?.x + this.boundPlatform?.width
+        ){
+            this.speedModifier *= -1;
+            if(this.originalX < this.boundPlatform?.x){
+                this.x += (this.boundPlatform?.x - this.originalX);
+                this.originalX = this.boundPlatform?.x;
+            }
+            if(this.originalX > this.boundPlatform?.x  + this.boundPlatform?.width){
+                this.x -= (this.originalX - this.boundPlatform?.x - this.boundPlatform?.width);
+                this.originalX = this.boundPlatform?.x  + this.boundPlatform?.width;
+            }
+        }
         this.x -= speed * this.speedModifier;
+        this.originalX -= speed * this.speedModifier;
         this.updateAnimation();
     }
 

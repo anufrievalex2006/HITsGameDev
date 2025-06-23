@@ -23,7 +23,7 @@ const levelConfigs = {
         },
         enemyConfig: {
             stoneEnemies: {
-                count: { min: 5, max: 15 },
+                count: { min: 20, max: 30 },
                 speedRange: { min: 0.8, max: 1.2 }
             },
             nazgulEnemies: {

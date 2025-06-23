@@ -7,6 +7,10 @@ export class EntityManager {
         this.entities.push(entity);
     }
 
+    last(){
+        return this.entities[this.entities.length - 1];
+    }
+
     addInStart(entity) {
         this.entities.unshift(entity);
     }
