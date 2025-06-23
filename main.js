@@ -10,7 +10,7 @@ const levelConfigs = {
         name: "Weather Hills",
         boss: "King-Wizard of Angmar",
         spawn: { x: 50, y: 300 },
-        width: 20000,
+        width: 25000,
         difficulty: 1,
         theme: "hills",
         platformConfig: {
@@ -39,7 +39,7 @@ const levelConfigs = {
         name: "Moria",
         boss: "Balrog",
         spawn: { x: 100, y: 200 },
-        width: 30000,
+        width: 35000,
         difficulty: 2,
         theme: "cave",
         platformConfig: {
