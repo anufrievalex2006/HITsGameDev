@@ -4,10 +4,43 @@ export const config = {
         height: 400,
     },
     player: {
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         jumpForce: -10,
         gravity: 0.5,
+        sprite: {
+            src: "player1.png",
+            frameWidth: 864/8,
+            frameHeight: 140,
+            framesPerRow: 8,
+            rows: 1,
+            frames: 8,
+            animationSpeed: 200
+        }
+    },
+    enemies: {
+        stone: {
+            sprite: {
+                src: "stone.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
+        nazgul: {
+            sprite: {
+                src: "nazgul.png",
+                frameWidth: 600,
+                frameHeight: 242,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        }
     },
     obstacles: {
         initialSpeed: 5,

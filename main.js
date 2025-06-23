@@ -17,20 +17,20 @@ const levelConfigs = {
             minWidth: 300,
             maxWidth: 600,
             minGap: 50,
-            maxGap: 250,
+            maxGap: 175,
             heightVariation: 100,
             baseHeight: 300
         },
         enemyConfig: {
             stoneEnemies: {
                 count: { min: 5, max: 15 },
-                speedRange: { min: 0.8, max: 1.5 }
+                speedRange: { min: 0.8, max: 1.2 }
             },
             nazgulEnemies: {
                 count: { min: 5, max: 10 },
-                speedRange: { min: 0.5, max: 1.2 },
-                speedXRange: { min: -2, max: -0.5 },
-                heightRange: { min: 100, max: 250 }
+                speedRange: { min: 1.6, max: 2.0 },
+                speedXRange: { min: -5, max: -3 },
+                heightRange: { min: 60, max: 120 }
             }
         }
     },
@@ -39,27 +39,27 @@ const levelConfigs = {
         name: "Moria",
         boss: "Balrog",
         spawn: { x: 100, y: 200 },
-        width: 20000,
+        width: 30000,
         difficulty: 2,
         theme: "cave",
         platformConfig: {
             minWidth: 300,
             maxWidth: 600,
-            minGap: 150,
-            maxGap: 400,
+            minGap: 100,
+            maxGap: 250,
             heightVariation: 100,
             baseHeight: 300
         },
         enemyConfig: {
             stoneEnemies: {
-                count: { min: 6, max: 10 },
-                speedRange: { min: 1.0, max: 2.0 }
+                count: { min: 9, max: 20 },
+                speedRange: { min: 1.0, max: 1.5 }
             },
             nazgulEnemies: {
-                count: { min: 2, max: 4 },
-                speedRange: { min: 0.8, max: 1.5 },
-                speedXRange: { min: -3, max: -1 },
-                heightRange: { min: 80, max: 200 }
+                count: { min: 8, max: 15 },
+                speedRange: { min: 2.0, max: 2.6 },
+                speedXRange: { min: -6, max: -3 },
+                heightRange: { min: 45, max: 90 }
             }
         }
     }

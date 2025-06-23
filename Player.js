@@ -8,6 +8,18 @@ export class Player {
         this.y = y;
         this.velocityY = 0;
         this.isJumping = false;
+
+        this.sprite = new Image();
+        this.sprite.src = config.player.sprite.src;
+        this.spriteLoaded = false;
+
+        this.sprite.onload = () => {
+            this.spriteLoaded = true;
+        };
+
+        this.curFrame = 0;
+        this.lastFrameTime = 0;
+        this.animationSpeed = config.player.sprite.animationSpeed;
     }
 
     update(platformSegments, obstacleSpeed) {
@@ -28,11 +40,38 @@ export class Player {
                 this.isJumping = false;
             }
         }
+        this.updateAnimation();
+    }
+
+    updateAnimation() {
+        const curTime = Date.now();
+        if (curTime - this.lastFrameTime > this.animationSpeed) {
+            this.curFrame = (this.curFrame + 1) % config.player.sprite.frames;
+            this.lastFrameTime = curTime;
+        }
     }
 
     draw(ctx) {
-        ctx.fillStyle = config.colors.player;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        if (this.spriteLoaded) {
+            const frameWidth = config.player.sprite.frameWidth;
+            const frameHeight = config.player.sprite.frameHeight;
+            const framesPerRow = config.player.sprite.framesPerRow;
+
+            const row = Math.floor(this.curFrame / framesPerRow);
+            const col = this.curFrame % framesPerRow;
+
+            const sourceX = col * frameWidth;
+            const sourceY = row * frameHeight;
+            ctx.drawImage(
+                this.sprite,
+                sourceX, sourceY, frameWidth, frameHeight,
+                this.x, this.y, this.width, this.height
+            );
+        }
+        else {
+            ctx.fillStyle = config.colors.player;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 
     jump() {
