@@ -75,7 +75,7 @@ export class GameEngine {
                         new Platform(
                             platform.x + i * segmentWidth,
                             platform.y,
-                            platform.width - segmentWidth * segmentCount
+                            platform.width % segmentWidth
                         )
                     );
                 }
