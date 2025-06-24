@@ -267,6 +267,10 @@ export class GameEngine {
         this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
+
+        const spawn = this.levelManager.getSpawnPoint();
+        this.player.x = spawn.x;
+        this.player.y = spawn.y;
         return true;
     }
 
@@ -284,7 +288,11 @@ export class GameEngine {
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
-        this.player = new Player(spawn.x, spawn.y);
+        if (this.player) {
+            this.player.x = spawn.x;
+            this.player.y = spawn.y;
+        }
+        else this.player = new Player(spawn.x, spawn.y);
         
         const currentLevel = this.levelManager.getCurrentLevel();
         if (currentLevel) {
