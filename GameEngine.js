@@ -103,6 +103,10 @@ export class GameEngine {
                 }
 
                 enemy.originalX = enemyData.x;
+                const platform = this.findPlatformForEnemy(enemy.originalX);
+                if (platform) {
+                    enemy.boundPlatform = platform;
+                }
                 this.enemyManager.add(enemy);
                 enemyData.spawned = true;
             }
@@ -120,6 +124,20 @@ export class GameEngine {
             this.speed += config.obstacles.acceleration;
         }
         this.levelDistance += this.speed;
+
+        // for (var [platform, enemies] of this.enemiesBoundedToPlatform) {
+        //     for (let i = 0; i < enemies.length; i++) {
+        //         if (enemies[i].originalX < platform.x || enemies[i].originalX > platform.x + platform.width) {
+        //             enemies[i].speedModifier = -1*enemies[i].speedModifier;
+        //             console.log(enemies[i].speedModifier);
+        //             if(enemies[i].originalX < platform.x){
+        //                 enemies[i].originalX = platform.x;
+        //             }else{
+        //                 enemies[i].originalX = platform.x + platform.width;
+        //             }
+        //         }
+        //     }
+        // }
 
         this.spawnEnemy();
         this.checkCollisions();
@@ -351,5 +369,14 @@ export class GameEngine {
         this.stop()
         $("#gameScreen").hide();
         $("#map").show();
+    }
+
+    findPlatformForEnemy(enemyX) {
+        for (const platform of this.platformManager.entities) {
+            if (enemyX >= platform.x && enemyX <= platform.x + platform.width) {
+                return platform;
+            }
+        }
+        return null;
     }
 }
