@@ -76,6 +76,18 @@ export class LevelManager {
         return this.currentLevel?.platforms || [];
     }
 
+    setPlatforms(platforms) {
+        if (this.currentLevel) {
+            this.currentLevel.platforms = platforms;
+        }
+    }
+
+    setEnemies(enemies) {
+        if (this.currentLevel) {
+            this.currentLevel.enemies = enemies;
+        }
+    }
+
     getSpawnPoint() {
         return this.currentLevel?.spawn || { x: 50, y: 300 };
     }

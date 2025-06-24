@@ -13,6 +13,9 @@ export class GameEngine {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.player = null;
+        this.originalEnemies = [];
+        this.originalWholePlatforms = [];
+        this.wholePlatforms = [];
         this.platformManager = new EntityManager();
         this.enemyManager = new EntityManager();
         this.levelManager = new LevelManager(levels);
@@ -22,7 +25,7 @@ export class GameEngine {
         this.animationFrameId = null;
         this.lastObstacleTime = 0;
         this.levelDistance = 0;
-        this.BossHP = 0
+        this.BossHP = 0;
 
         this.keyHandler = null;
         this.setupEventListeners();
@@ -52,9 +55,9 @@ export class GameEngine {
 
     generatePlatforms() {
         this.platformManager.clear();
-        const platforms = this.levelManager.getPlatforms();
+        this.wholePlatforms = this.levelManager.getPlatforms();
         
-        platforms.forEach(platform => {
+        this.wholePlatforms.forEach(platform => {
             const segmentWidth = config.platform.segmentWidth;
             const segmentCount = Math.ceil(platform.width / segmentWidth);
             
@@ -81,9 +84,13 @@ export class GameEngine {
                 let enemy;
                 switch (enemyData.type) {
                     case 'Stone':
+                        const plat = this.findWholePlatformForEnemy(enemyData.x);
+                        if (!plat) {
+                            return;
+                        }
                         enemy = new StoneEnemy(
                             screenX,
-                            this.canvas.height - 80,
+                            plat.y - 40,
                             enemyData
                         );
                         break;
@@ -103,14 +110,25 @@ export class GameEngine {
                 }
 
                 enemy.originalX = enemyData.x;
-                const platform = this.findPlatformForEnemy(enemy.originalX);
+                const platform = this.findWholePlatformForEnemy(enemy.originalX);
                 if (platform) {
                     enemy.boundPlatform = platform;
+                    if (enemyData.relativeSpeed === undefined)
+                        enemy.relativeSpeed = 2;
                 }
                 this.enemyManager.add(enemy);
                 enemyData.spawned = true;
             }
         });
+    }
+
+    findWholePlatformForEnemy(enemyX) {
+        for (const platform of this.wholePlatforms) {
+            if (enemyX >= platform.x && enemyX <= platform.x + platform.width) {
+                return platform;
+            }
+        }
+        return null;
     }
 
     update() {
@@ -120,6 +138,10 @@ export class GameEngine {
         this.platformManager.update(this.speed);
         this.enemyManager.update(this.speed);
 
+        this.wholePlatforms.forEach(platform => {
+            platform.x -= this.speed;
+        });
+        
         if (this.speed < config.obstacles.maxSpeed) {
             this.speed += config.obstacles.acceleration;
         }
@@ -205,6 +227,9 @@ export class GameEngine {
             } else if (this.player.x > enemy.x + enemy.width && !enemy.passed) {
                 this.score++;
                 enemy.passed = true;
+                
+                if (enemy.relativeSpeed !== 0)
+                    enemy.relativeSpeed = 0;
             }
         });
 
@@ -242,6 +267,9 @@ export class GameEngine {
             return false;
         }
         
+        this.originalEnemies = JSON.parse(JSON.stringify(this.levelManager.getEnemies()));
+        this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
+        this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
         return true;
     }
@@ -249,6 +277,14 @@ export class GameEngine {
     resetLevel() {
         this.enemyManager.clear();
         this.platformManager.clear();
+
+        if (this.originalEnemies.length > 0) {
+            this.levelManager.setEnemies(JSON.parse(JSON.stringify(this.originalEnemies)));
+        }
+        if (this.originalWholePlatforms.length > 0) {
+            this.levelManager.setPlatforms(JSON.parse(JSON.stringify(this.originalWholePlatforms)));
+            this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
+        }
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
@@ -299,11 +335,7 @@ export class GameEngine {
     }
 
     checkDistanceForSpawnBoss(){
-        const currentLevel = this.levelManager.getCurrentLevel()
-        const levelLength = currentLevel ? currentLevel.width : 0
-        const spawnPoint = levelLength * 0.6
-        
-        if(this.levelDistance >= spawnPoint && this.levelDistance <= spawnPoint + 500 && this.BossHP == 0){
+        if(this.levelDistance >= 15000 && this.levelDistance <= 15500 && this.BossHP == 0){
             return true
         }else{
             return false

@@ -10,7 +10,7 @@ const levelConfigs = {
         name: "Weather Hills",
         boss: "King-Wizard of Angmar",
         spawn: { x: 50, y: 300 },
-        width: 20000,
+        width: 25000,
         difficulty: 1,
         theme: "hills",
         platformConfig: {
@@ -39,7 +39,7 @@ const levelConfigs = {
         name: "Moria",
         boss: "Balrog",
         spawn: { x: 100, y: 200 },
-        width: 30000,
+        width: 35000,
         difficulty: 2,
         theme: "cave",
         platformConfig: {
@@ -133,7 +133,12 @@ class LevelGenerator {
 
         for (let i = 0; i < kStones; i++) {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
-            const x = this.randomRange(platform.x + 50, platform.x + platform.width - 50, this.seed + i + 1200);
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 1200
+            );
+            const y = platform.y - 40;
             const speed = this.randomRange(
                 config.enemyConfig.stoneEnemies.speedRange.min,
                 config.enemyConfig.stoneEnemies.speedRange.max,
@@ -143,8 +148,9 @@ class LevelGenerator {
             enemies.push({
                 type: "Stone",
                 x: x,
-                y: platform.y - 40,
-                speed: speed
+                y: y,
+                speed: speed,
+                relativeSpeed: 2
             });
         }
 
