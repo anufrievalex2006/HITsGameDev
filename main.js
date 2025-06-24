@@ -133,7 +133,12 @@ class LevelGenerator {
 
         for (let i = 0; i < kStones; i++) {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
-            const x = this.randomRange(platform.x + 50, platform.x + platform.width - 50, this.seed + i + 1200);
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 1200
+            );
+            const y = platform.y - 40;
             const speed = this.randomRange(
                 config.enemyConfig.stoneEnemies.speedRange.min,
                 config.enemyConfig.stoneEnemies.speedRange.max,
@@ -143,8 +148,9 @@ class LevelGenerator {
             enemies.push({
                 type: "Stone",
                 x: x,
-                y: platform.y - 40,
-                speed: speed
+                y: y,
+                speed: speed,
+                relativeSpeed: 2
             });
         }
 

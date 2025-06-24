@@ -10,6 +10,7 @@ export class StoneEnemy {
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
         this.boundPlatform = null;
+        this.relativeSpeed = data.relativeSpeed || 0;
 
         this.sprite = new Image();
         this.sprite.src = config.enemies.stone.sprite.src;
@@ -30,22 +31,24 @@ export class StoneEnemy {
     }
 
     update(speed) {
-        if(
-            this.originalX < this.boundPlatform?.x
-            || this.originalX > this.boundPlatform?.x + this.boundPlatform?.width
-        ){
-            this.speedModifier *= -1;
-            if(this.originalX < this.boundPlatform?.x){
-                this.x += (this.boundPlatform?.x - this.originalX);
-                this.originalX = this.boundPlatform?.x;
+        this.x -= speed;
+
+        if (this.boundPlatform && this.relativeSpeed !== 0 && !this.passed) {
+            this.x += this.relativeSpeed;
+
+            const platLeft = this.boundPlatform.x;
+            const platRight = this.boundPlatform.x + this.boundPlatform.width;
+
+            if (this.x <= platLeft) {
+                this.x = platLeft;
+                this.relativeSpeed = Math.abs(this.relativeSpeed);
             }
-            if(this.originalX > this.boundPlatform?.x  + this.boundPlatform?.width){
-                this.x -= (this.originalX - this.boundPlatform?.x - this.boundPlatform?.width);
-                this.originalX = this.boundPlatform?.x  + this.boundPlatform?.width;
+            else if (this.x + this.width >= platRight) {
+                this.x = platRight - this.width;
+                this.relativeSpeed = -Math.abs(this.relativeSpeed);
             }
         }
-        this.x -= speed * this.speedModifier;
-        this.originalX -= speed * this.speedModifier;
+
         this.updateAnimation();
     }
 
