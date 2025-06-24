@@ -3,7 +3,7 @@ import { config } from "../config.js"
 export class StoneEnemy {
     constructor(x, y, data) {
         this.x = x;
-        this.y = data.y;
+        this.y = y;
         this.width = 40;
         this.height = 40;
         this.type = data.type || 'Stone';
