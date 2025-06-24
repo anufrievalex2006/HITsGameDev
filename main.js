@@ -16,8 +16,8 @@ const levelConfigs = {
         platformConfig: {
             minWidth: 300,
             maxWidth: 600,
-            minGap: 50,
-            maxGap: 175,
+            minGap: 0,
+            maxGap: 0,
             heightVariation: 100,
             baseHeight: 300
         },
@@ -109,6 +109,8 @@ class LevelGenerator {
             const width = this.randomRange(minWidth, maxWidth, this.seed + platformId*200);
             const heightOffset = this.randomRange(-heightVariation/2, heightVariation/2, this.seed + platformId*300);
             const height = Math.max(200, Math.min(380, baseHeight + heightOffset));
+            
+            console.log(`Platform at x=${curX}, width=${Math.min(width, config.width - curX)}`);
 
             platforms.push({
                 x: curX,
@@ -119,6 +121,7 @@ class LevelGenerator {
             curX += width;
             platformId++;
         }
+        console.log(`--------------------------------------------------------------------------------------`);
         return platforms;
     }
 

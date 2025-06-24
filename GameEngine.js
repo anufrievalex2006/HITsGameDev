@@ -60,15 +60,25 @@ export class GameEngine {
         this.wholePlatforms.forEach(platform => {
             const segmentWidth = config.platform.segmentWidth;
             const segmentCount = Math.ceil(platform.width / segmentWidth);
-            
+
             for (let i = 0; i < segmentCount; i++) {
-                this.platformManager.add(
-                    new Platform(
-                        platform.x + i * segmentWidth,
-                        platform.y,
-                        segmentWidth
-                    )
-                );
+                if(i != segmentCount - 1){
+                    this.platformManager.add(
+                        new Platform(
+                            platform.x + i * segmentWidth,
+                            platform.y,
+                            segmentWidth
+                        )
+                    );
+                }else{
+                    this.platformManager.add(
+                        new Platform(
+                            platform.x + i * segmentWidth,
+                            platform.y,
+                            platform.width % segmentWidth
+                        )
+                    );
+                }
             }
         });
     }
@@ -146,20 +156,6 @@ export class GameEngine {
             this.speed += config.obstacles.acceleration;
         }
         this.levelDistance += this.speed;
-
-        // for (var [platform, enemies] of this.enemiesBoundedToPlatform) {
-        //     for (let i = 0; i < enemies.length; i++) {
-        //         if (enemies[i].originalX < platform.x || enemies[i].originalX > platform.x + platform.width) {
-        //             enemies[i].speedModifier = -1*enemies[i].speedModifier;
-        //             console.log(enemies[i].speedModifier);
-        //             if(enemies[i].originalX < platform.x){
-        //                 enemies[i].originalX = platform.x;
-        //             }else{
-        //                 enemies[i].originalX = platform.x + platform.width;
-        //             }
-        //         }
-        //     }
-        // }
 
         this.spawnEnemy();
         this.checkCollisions();
