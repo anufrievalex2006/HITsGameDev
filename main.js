@@ -324,6 +324,7 @@ document.querySelectorAll(".levelBtn").forEach(button => {
 });
 
 document.getElementById("backFromGame").addEventListener("click", () => {
+    game.resetLevel();
     game.stop();
     $("#gameScreen").hide();
     $("#map").show();
