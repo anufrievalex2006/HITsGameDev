@@ -26,6 +26,9 @@ export class GameEngine {
         this.lastObstacleTime = 0;
         this.levelDistance = 0;
         this.BossHP = 0;
+        this.groundImage = new Image();
+        this.groundImage.src = "dirt.png";
+        this.groundHeight = 50;
 
         this.keyHandler = null;
         this.setupEventListeners();
@@ -81,6 +84,45 @@ export class GameEngine {
                 }
             }
         });
+    }
+
+    drawGround(ctx) {
+        if (!this.groundImage) {
+            this.groundImage = new Image();
+            this.groundImage.src = 'ground.png';
+        }
+
+        const groundLevel = this.canvas.height;
+
+        if (this.groundImage.complete) {
+            const pattern = ctx.createPattern(this.groundImage, 'repeat');
+            ctx.fillStyle = pattern;
+
+            this.wholePlatforms.forEach(platform => {
+                const platformBottom = platform.y + config.platform.segmentHeight;
+                if (platformBottom < groundLevel) {
+                    ctx.fillRect(
+                        platform.x,
+                        platformBottom,
+                        platform.width,
+                        groundLevel - platformBottom
+                    );
+                }
+            });
+        } else {
+            ctx.fillStyle = '#5C4033';
+            this.wholePlatforms.forEach(platform => {
+                const platformBottom = platform.y + config.platform.segmentHeight;
+                if (platformBottom < groundLevel) {
+                    ctx.fillRect(
+                        platform.x,
+                        platformBottom,
+                        platform.width,
+                        groundLevel - platformBottom
+                    );
+                }
+            });
+        }
     }
 
     spawnEnemy() {
@@ -164,6 +206,8 @@ export class GameEngine {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.drawGround(this.ctx);
 
         this.platformManager.draw(this.ctx);
         this.enemyManager.draw(this.ctx);
