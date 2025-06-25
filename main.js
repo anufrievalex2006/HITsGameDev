@@ -32,6 +32,14 @@ const levelConfigs = {
                 speedXRange: { min: -5, max: -3 },
                 heightRange: { min: 60, max: 120 }
             }
+        },
+        collectibleConfig: {
+            speedUp: {
+                count: { min: 9, max: 20 }
+            },
+            speedDown: {
+                count: { min: 8, max: 15 }
+            }
         }
     },
     moria: {
@@ -60,6 +68,14 @@ const levelConfigs = {
                 speedRange: { min: 2.0, max: 2.6 },
                 speedXRange: { min: -6, max: -3 },
                 heightRange: { min: 45, max: 90 }
+            }
+        },
+        collectibleConfig: {
+            speedUp: {
+                count: { min: 9, max: 20 }
+            },
+            speedDown: {
+                count: { min: 8, max: 15 }
             }
         }
     }
@@ -192,6 +208,61 @@ class LevelGenerator {
         return enemies;
     }
 
+    generateCollectibles(config, platforms) {
+        const collectibles = [];
+
+        const kSpeedUp = this.randomInt(
+            config.collectibleConfig.speedUp.count.min,
+            config.collectibleConfig.speedUp.count.max,
+            this.seed + 1000
+        );
+
+        for (let i = 0; i < kSpeedUp; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 1200
+            );
+            const y = platform.y - 40;
+            const speed = 0;
+
+            collectibles.push({
+                type: "SpeedUp",
+                x: x,
+                y: y,
+                speed: speed,
+                relativeSpeed: 0
+            });
+        }
+
+        const kSpeedDown = this.randomInt(
+            config.collectibleConfig.speedDown.count.min,
+            config.collectibleConfig.speedDown.count.max,
+            this.seed + 2000
+        );
+
+        for (let i = 0; i < kSpeedDown; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 1200
+            );
+            const y = platform.y - 40;
+            const speed = 0;
+
+            collectibles.push({
+                type: "SpeedDown",
+                x: x,
+                y: y,
+                speed: speed,
+                relativeSpeed: 0
+            });
+        }
+        return collectibles;
+    }
+
     generateLevel(levelId) {
         const config = levelConfigs[levelId];
         if (!config) {
@@ -209,6 +280,7 @@ class LevelGenerator {
         this.seed = this.hashCode(randomId) + 12345*Math.random();
         const platforms = this.generatePlatforms(config);
         const enemies = this.generateEnemies(config, platforms);
+        const collectibles = this.generateCollectibles(config, platforms);
 
         return {
             id: config.id,
@@ -216,7 +288,8 @@ class LevelGenerator {
             boss: config.boss,
             spawn: config.spawn,
             platforms: platforms,
-            enemies: enemies
+            enemies: enemies,
+            collectibles: collectibles
         };
     }
 

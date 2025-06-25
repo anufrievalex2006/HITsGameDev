@@ -42,6 +42,30 @@ export const config = {
             }
         }
     },
+    collectible: {
+        speedUp: {
+            sprite: {
+                src: "speedUp.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
+        speedDown: {
+            sprite: {
+                src: "speedDown.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        }
+    },
     obstacles: {
         initialSpeed: 5,
         maxSpeed: 20,
