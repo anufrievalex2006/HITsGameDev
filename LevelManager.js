@@ -20,6 +20,10 @@ export class LevelManager {
         return this.currentLevel?.enemies || [];
     }
 
+    getCollectible() {
+        return this.currentLevel?.collectibles || [];
+    }
+
     generateEnemies(platforms) {
         const enemies = [];
         platforms.forEach(platform => {
