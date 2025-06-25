@@ -142,3 +142,7 @@ body, html {
     margin-top: 30px;
     max-width: 600px;
 }
+
+#cloudLayer{
+    display: none;
+}

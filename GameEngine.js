@@ -9,6 +9,7 @@ import { SpeedUp } from './Collectible/SpeedUp.js';
 import { SpeedDown } from './Collectible/SpeedDown.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
+import { Layer } from "./Layer.js"
 
 export class GameEngine {
     constructor(canvas, levels) {
@@ -32,6 +33,7 @@ export class GameEngine {
         this.groundImage = new Image();
         this.groundImage.src = "dirt.png";
         this.groundHeight = 50;
+        this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
 
         this.keyHandler = null;
         this.setupEventListeners();
@@ -238,6 +240,7 @@ export class GameEngine {
     update() {
         if (!this.player) return;
         
+        this.layer.update(1);
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
         this.enemyManager.update(this.speed);
@@ -261,9 +264,9 @@ export class GameEngine {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.drawGround(this.ctx);
-
+        this.layer.draw(this.ctx);
         this.platformManager.draw(this.ctx);
+        this.drawGround(this.ctx);
         this.enemyManager.draw(this.ctx);
         this.collectibleManager.draw(this.ctx);
         if (this.player) {
@@ -331,9 +334,9 @@ export class GameEngine {
         this.collectibleManager.entities.forEach(enemy => {
             if (this.isColliding(this.player, enemy)) {
                 if(enemy.type === "SpeedUp"){
-                    this.speed *= 1.01;
+                    this.speed *= 1.005;
                 }else if(enemy.type === "SpeedDown"){
-                    this.speed /= 1.01;
+                    this.speed /= 1.005;
                 }
             }
         });
@@ -414,6 +417,7 @@ export class GameEngine {
         this.lastObstacleTime = 0;
         this.BossHP = 0
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
     }
 
     start() {
