@@ -380,9 +380,6 @@ export class GameEngine {
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
 
-        const spawn = this.levelManager.getSpawnPoint();
-        this.player.x = spawn.x;
-        this.player.y = spawn.y;
         return true;
     }
 
@@ -390,6 +387,12 @@ export class GameEngine {
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();
+
+        this.score = 0;
+        this.speed = config.obstacles.initialSpeed;
+        this.levelDistance = 0;
+        this.lastObstacleTime = 0;
+        this.BossHP = 0;
 
         if (this.originalEnemies.length > 0) {
             this.levelManager.setEnemies(JSON.parse(JSON.stringify(this.originalEnemies)));
@@ -402,8 +405,7 @@ export class GameEngine {
         
         const spawn = this.levelManager.getSpawnPoint();
         if (this.player) {
-            this.player.x = spawn.x;
-            this.player.y = spawn.y;
+            this.player.reset(spawn.x, spawn.y);
         }
         else this.player = new Player(spawn.x, spawn.y);
         
@@ -419,11 +421,6 @@ export class GameEngine {
             });
         }
         
-        this.score = 0;
-        this.speed = config.obstacles.initialSpeed;
-        this.levelDistance = 0;
-        this.lastObstacleTime = 0;
-        this.BossHP = 0
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
     }
