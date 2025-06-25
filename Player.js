@@ -74,6 +74,15 @@ export class Player {
         }
     }
 
+    reset(x, y) {
+        this.x = x;
+        this.y = y;
+        this.velocityY = 0;
+        this.isJumping = false;
+        this.curFrame = 0;
+        this.lastFrameTime = 0;
+    }
+
     jump() {
         if (!this.isJumping) {
             this.velocityY = config.player.jumpForce;

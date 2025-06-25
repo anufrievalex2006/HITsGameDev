@@ -318,6 +318,7 @@ const game = new GameEngine(canvas, levels);
 document.querySelectorAll(".levelBtn").forEach(button => {
     button.addEventListener("click", () => {
         const levelId = button.dataset.level;
+        game.stop();
         if (game.loadLevel(levelId)) {
             $("#map").hide();
             $("#gameScreen").show();
@@ -327,8 +328,8 @@ document.querySelectorAll(".levelBtn").forEach(button => {
 });
 
 document.getElementById("backFromGame").addEventListener("click", () => {
-    game.resetLevel();
     game.stop();
+    game.resetLevel();
     $("#gameScreen").hide();
     $("#map").show();
 });

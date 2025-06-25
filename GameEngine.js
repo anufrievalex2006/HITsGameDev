@@ -196,14 +196,14 @@ export class GameEngine {
                         }
                         collectible = new SpeedUp(
                             screenX,
-                            plat.y - 40,
+                            plat.y - config.collectible.height,
                             data
                         );
                         break;
                     case 'SpeedDown':
                         collectible = new SpeedDown(
                             screenX,
-                            data.y - 40,
+                            data.y - config.collectible.height,
                             data
                         );
                         break;
@@ -362,7 +362,8 @@ export class GameEngine {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
 
-        alert(`Game Over! Score: ${this.score}`);
+        const finalScore = this.score;
+        alert(`Game Over! Score: ${finalScore}`);
         this.resetLevel();
         setTimeout(() => {
             this.start();
@@ -370,6 +371,8 @@ export class GameEngine {
     }
 
     loadLevel(levelId) {
+        this.stop();
+
         if (!this.levelManager.loadLevel(levelId)) {
             console.error(`Level ${levelId} not found!`);
             return false;
@@ -379,13 +382,27 @@ export class GameEngine {
         this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
+
         return true;
     }
 
     resetLevel() {
+        const wasRunning = this.gameRunning;
+        this.gameRunning = false;
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();
+
+        this.score = 0;
+        this.speed = config.obstacles.initialSpeed;
+        this.levelDistance = 0;
+        this.lastObstacleTime = 0;
+        this.BossHP = 0;
 
         if (this.originalEnemies.length > 0) {
             this.levelManager.setEnemies(JSON.parse(JSON.stringify(this.originalEnemies)));
@@ -397,7 +414,10 @@ export class GameEngine {
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
-        this.player = new Player(spawn.x, spawn.y);
+        if (this.player) {
+            this.player.reset(spawn.x, spawn.y);
+        }
+        else this.player = new Player(spawn.x, spawn.y);
         
         const currentLevel = this.levelManager.getCurrentLevel();
         if (currentLevel) {
@@ -411,13 +431,10 @@ export class GameEngine {
             });
         }
         
-        this.score = 0;
-        this.speed = config.obstacles.initialSpeed;
-        this.levelDistance = 0;
-        this.lastObstacleTime = 0;
-        this.BossHP = 0
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
+    
+        this.gameRunning = wasRunning;
     }
 
     start() {
@@ -515,6 +532,7 @@ export class GameEngine {
 
     gameWin() {
         this.gameRunning = false;
+        this.resetLevel();
         alert(`Победа! Игра завершена. Счет: ${this.score}`);
         this.stop()
         $("#gameScreen").hide();
