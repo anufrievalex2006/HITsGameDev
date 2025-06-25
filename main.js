@@ -210,6 +210,7 @@ class LevelGenerator {
 
     generateCollectibles(config, platforms) {
         const collectibles = [];
+        const minDistance = 150;
 
         const kSpeedUp = this.randomInt(
             config.collectibleConfig.speedUp.count.min,
@@ -220,18 +221,19 @@ class LevelGenerator {
         for (let i = 0; i < kSpeedUp; i++) {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
             const x = this.randomRange(
-                platform.x + 20, 
+                platform.x + 20,
                 platform.x + platform.width - 60,
                 this.seed + i + 1200
             );
-            const y = platform.y - 40;
-            const speed = 0;
+
+            const tooClose = collectibles.some(c => Math.abs(c.x - x) < minDistance);
+            if (tooClose) continue;
 
             collectibles.push({
                 type: "SpeedUp",
                 x: x,
-                y: y,
-                speed: speed,
+                y: platform.y - 40,
+                speed: 0,
                 relativeSpeed: 0
             });
         }
@@ -243,20 +245,21 @@ class LevelGenerator {
         );
 
         for (let i = 0; i < kSpeedDown; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 2100)];
             const x = this.randomRange(
-                platform.x + 20, 
+                platform.x + 20,
                 platform.x + platform.width - 60,
-                this.seed + i + 1200
+                this.seed + i + 2200
             );
-            const y = platform.y - 40;
-            const speed = 0;
+
+            const tooClose = collectibles.some(c => Math.abs(c.x - x) < minDistance);
+            if (tooClose) continue;
 
             collectibles.push({
                 type: "SpeedDown",
                 x: x,
-                y: y,
-                speed: speed,
+                y: platform.y - 40,
+                speed: 0,
                 relativeSpeed: 0
             });
         }
