@@ -362,7 +362,8 @@ export class GameEngine {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
 
-        alert(`Game Over! Score: ${this.score}`);
+        const finalScore = this.score;
+        alert(`Game Over! Score: ${finalScore}`);
         this.resetLevel();
         setTimeout(() => {
             this.start();
@@ -370,6 +371,8 @@ export class GameEngine {
     }
 
     loadLevel(levelId) {
+        this.stop();
+        
         if (!this.levelManager.loadLevel(levelId)) {
             console.error(`Level ${levelId} not found!`);
             return false;
@@ -384,6 +387,13 @@ export class GameEngine {
     }
 
     resetLevel() {
+        const wasRunning = this.gameRunning;
+        this.gameRunning = false;
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();
@@ -423,6 +433,8 @@ export class GameEngine {
         
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
+    
+        this.gameRunning = wasRunning;
     }
 
     start() {
@@ -520,6 +532,7 @@ export class GameEngine {
 
     gameWin() {
         this.gameRunning = false;
+        this.resetLevel();
         alert(`Победа! Игра завершена. Счет: ${this.score}`);
         this.stop()
         $("#gameScreen").hide();
