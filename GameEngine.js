@@ -320,7 +320,7 @@ export class GameEngine {
         }
         
         this.enemyManager.entities.forEach(enemy => {
-            if (this.isColliding(this.player, enemy)) {
+            if (this.isColliding(this.player, enemy) && enemy.type != "Bullet") {
                 this.gameOver();
             } else if (this.player.x > enemy.x + enemy.width && !enemy.passed) {
                 this.score++;
