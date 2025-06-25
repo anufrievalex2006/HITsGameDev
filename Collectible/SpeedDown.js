@@ -4,8 +4,8 @@ export class SpeedDown {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 100;
-        this.height = 100;
+        this.width = config.collectible.width;
+        this.height = config.collectible.height;
         this.type = data.type || 'SpeedDown';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;

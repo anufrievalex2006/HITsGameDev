@@ -43,6 +43,8 @@ export const config = {
         }
     },
     collectible: {
+        width: 150,
+        height: 150,
         speedUp: {
             sprite: {
                 src: "speedUp.png",

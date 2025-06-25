@@ -196,14 +196,14 @@ export class GameEngine {
                         }
                         collectible = new SpeedUp(
                             screenX,
-                            plat.y - 40,
+                            plat.y - config.collectible.height,
                             data
                         );
                         break;
                     case 'SpeedDown':
                         collectible = new SpeedDown(
                             screenX,
-                            data.y - 40,
+                            data.y - config.collectible.height,
                             data
                         );
                         break;
@@ -372,7 +372,7 @@ export class GameEngine {
 
     loadLevel(levelId) {
         this.stop();
-        
+
         if (!this.levelManager.loadLevel(levelId)) {
             console.error(`Level ${levelId} not found!`);
             return false;
