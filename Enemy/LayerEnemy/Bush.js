@@ -4,8 +4,8 @@ export class Bush {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 300;
-        this.height = 200;
+        this.width = 45;
+        this.height = 30;
         this.type = data.type || 'Bush';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
