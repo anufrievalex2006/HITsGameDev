@@ -1,18 +1,24 @@
 import { config } from "./config.js";
+
 import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
-import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
-import { StoneEnemy } from './Enemy/StoneEnemy.js';
-import { BulletEnemy } from './Enemy/Bullet.js';
-import { Tree } from './Enemy/LayerEnemy/Tree.js';
-import { Bush } from './Enemy/LayerEnemy/Bush.js';
-import { Clother } from './Enemy/LayerEnemy/Clother.js';
-import { BossEnemy } from './Enemy/Boss.js';
-import { SpeedUp } from './Collectible/SpeedUp.js';
-import { SpeedDown } from './Collectible/SpeedDown.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
 import { Layer } from "./Layer.js"
+
+import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
+import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { Branch } from './Enemy/Branch.js';
+import { BossEnemy } from './Enemy/Boss.js';
+
+import { BulletEnemy } from './Enemy/Bullet.js';
+
+import { Tree } from './Enemy/LayerEnemy/Tree.js';
+import { Bush } from './Enemy/LayerEnemy/Bush.js';
+import { Clother } from './Enemy/LayerEnemy/Clother.js';
+
+import { SpeedUp } from './Collectible/SpeedUp.js';
+import { SpeedDown } from './Collectible/SpeedDown.js';
 
 export class GameEngine {
     constructor(canvas, levels) {
@@ -186,10 +192,17 @@ export class GameEngine {
                             enemyData
                         );
                         break;
+                    case 'Branch':
+                        enemy = new Branch(
+                            screenX,
+                            0,
+                            enemyData
+                        );
+                        break;
                     default:
                         enemy = new StoneEnemy(
                             screenX,
-                            this.canvas.height - 50,
+                            plat.y - 40,
                             enemyData
                         );
                 }
@@ -339,7 +352,7 @@ export class GameEngine {
         this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
-        this.enemyManager.update(this.speed);
+        this.enemyManager.update(this.speed, this.player.x);
         this.collectibleManager.update(this.speed);
 
         this.wholePlatforms.forEach(platform => {

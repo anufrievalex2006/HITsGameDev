@@ -41,6 +41,17 @@ export const config = {
                 animationSpeed: 250
             }
         },
+        branch: {
+            sprite: {
+                src: "branch.png",
+                frameWidth: 600,
+                frameHeight: 242,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
         tree: {
             sprite: {
                 src: "tree.png",
