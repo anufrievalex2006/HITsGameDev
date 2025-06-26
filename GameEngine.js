@@ -286,7 +286,7 @@ export class GameEngine {
                         }
                         enemy = new Tree(
                             screenX,
-                            plat.y - 600,
+                            plat.y - 490,
                             enemyData
                         );
                         break;
@@ -296,7 +296,7 @@ export class GameEngine {
                         }
                         enemy = new Bush(
                             screenX,
-                            plat.y - 300,
+                            plat.y - 30,
                             enemyData
                         );
                         break;
@@ -306,14 +306,14 @@ export class GameEngine {
                         }
                         enemy = new Clother(
                             screenX,
-                            plat.y - 200,
+                            plat.y - 90,
                             enemyData
                         );
                         break;
                     default:
                         enemy = new Tree(
                             screenX,
-                            this.canvas.height - 50,
+                            plat.y,
                             enemyData
                         );
                 }

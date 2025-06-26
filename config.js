@@ -44,8 +44,8 @@ export const config = {
         branch: {
             sprite: {
                 src: "branch.png",
-                frameWidth: 600,
-                frameHeight: 242,
+                frameWidth: 1158,
+                frameHeight: 930,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,

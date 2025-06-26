@@ -5,7 +5,7 @@ export class Branch {
         this.x = x;
         this.y = y;
         this.width = 50;
-        this.height = 150;
+        this.height = 100;
         this.type = data.type || 'Branch';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
