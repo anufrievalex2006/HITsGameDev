@@ -273,10 +273,10 @@ class LevelGenerator {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 2100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 60,
+                platform.x + platform.width - 280,
                 this.seed + i + 2200
             );
-            const y = platform.y - 40;
+            const y = platform.y - 500;
 
             enemies.push({
                 type: "Tree",
@@ -297,10 +297,10 @@ class LevelGenerator {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 60,
+                platform.x + platform.width - 65,
                 this.seed + i + 3200
             );
-            const y = platform.y - 40;
+            const y = platform.y - 30;
 
             enemies.push({
                 type: "Bush",
@@ -312,19 +312,19 @@ class LevelGenerator {
         }
 
         const kClothers = this.randomInt(
-            config.layerConfig.bush.count.min,
-            config.layerConfig.bush.count.max,
-            this.seed + 3000
+            config.layerConfig.clother.count.min,
+            config.layerConfig.clother.count.max,
+            this.seed + 4000
         );
 
         for (let i = 0; i < kClothers; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 4100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 60,
-                this.seed + i + 3200
+                platform.x + platform.width - 140,
+                this.seed + i + 4200
             );
-            const y = platform.y - 40;
+            const y = platform.y - 80;
 
             enemies.push({
                 type: "Clother",
