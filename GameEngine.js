@@ -1,18 +1,24 @@
 import { config } from "./config.js";
+
 import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
-import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
-import { StoneEnemy } from './Enemy/StoneEnemy.js';
-import { BulletEnemy } from './Enemy/Bullet.js';
-import { Tree } from './Enemy/LayerEnemy/Tree.js';
-import { Bush } from './Enemy/LayerEnemy/Bush.js';
-import { Clother } from './Enemy/LayerEnemy/Clother.js';
-import { BossEnemy } from './Enemy/Boss.js';
-import { SpeedUp } from './Collectible/SpeedUp.js';
-import { SpeedDown } from './Collectible/SpeedDown.js';
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
 import { Layer } from "./Layer.js"
+
+import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
+import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { Branch } from './Enemy/Branch.js';
+import { BossEnemy } from './Enemy/Boss.js';
+
+import { BulletEnemy } from './Enemy/Bullet.js';
+
+import { Tree } from './Enemy/LayerEnemy/Tree.js';
+import { Bush } from './Enemy/LayerEnemy/Bush.js';
+import { Clother } from './Enemy/LayerEnemy/Clother.js';
+
+import { SpeedUp } from './Collectible/SpeedUp.js';
+import { SpeedDown } from './Collectible/SpeedDown.js';
 
 export class GameEngine {
     constructor(canvas, levels) {
@@ -39,6 +45,13 @@ export class GameEngine {
         this.groundHeight = 50;
         this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
 
+        this.lastEPressTime = 0;
+        this.ePressDelay = 1000;
+        this.isSpeedBoosted = false;
+        this.speedBoostDuration = 100;
+        this.speedBoostEndTime = 0;
+        this.originalSpeed = config.obstacles.initialSpeed;
+
         this.keyHandler = null;
         this.setupEventListeners();
     }
@@ -51,7 +64,7 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
-            if (e.key === "q" && this.gameRunning) {
+            if ((e.key === "q" || e.key === "й") && this.gameRunning) {
                 const screenX = 80;
                 let enemy = new BulletEnemy(
                             screenX,
@@ -59,6 +72,23 @@ export class GameEngine {
                             {type: "Bullet", speed: -5}
                         );
                 this.enemyManager.addInStart(enemy)
+            }
+            if ((e.key === "e" || e.key === "у") && this.gameRunning) {
+                const currentTime = performance.now();
+
+                if (currentTime - this.lastEPressTime >= this.ePressDelay) {
+                    this.lastEPressTime = currentTime;
+                    
+                    if (this.isSpeedBoosted) {
+                        this.speed = this.originalSpeed;
+                        this.isSpeedBoosted = false;
+                    }
+                    
+                    this.originalSpeed = this.speed;
+                    this.speed += 20;
+                    this.isSpeedBoosted = true;
+                    this.speedBoostEndTime = currentTime + this.speedBoostDuration;
+                }
             }
         };
 
@@ -162,10 +192,17 @@ export class GameEngine {
                             enemyData
                         );
                         break;
+                    case 'Branch':
+                        enemy = new Branch(
+                            screenX,
+                            0,
+                            enemyData
+                        );
+                        break;
                     default:
                         enemy = new StoneEnemy(
                             screenX,
-                            this.canvas.height - 50,
+                            plat.y - 40,
                             enemyData
                         );
                 }
@@ -249,7 +286,7 @@ export class GameEngine {
                         }
                         enemy = new Tree(
                             screenX,
-                            plat.y - 600,
+                            plat.y - 490,
                             enemyData
                         );
                         break;
@@ -259,7 +296,7 @@ export class GameEngine {
                         }
                         enemy = new Bush(
                             screenX,
-                            plat.y - 300,
+                            plat.y - 30,
                             enemyData
                         );
                         break;
@@ -269,14 +306,14 @@ export class GameEngine {
                         }
                         enemy = new Clother(
                             screenX,
-                            plat.y - 200,
+                            plat.y - 90,
                             enemyData
                         );
                         break;
                     default:
                         enemy = new Tree(
                             screenX,
-                            this.canvas.height - 50,
+                            plat.y,
                             enemyData
                         );
                 }
@@ -305,12 +342,17 @@ export class GameEngine {
 
     update() {
         if (!this.player) return;
+
+        if (this.isSpeedBoosted && performance.now() >= this.speedBoostEndTime) {
+            this.speed = this.originalSpeed;
+            this.isSpeedBoosted = false;
+        }
         
         this.layer.update(1);
         this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
-        this.enemyManager.update(this.speed);
+        this.enemyManager.update(this.speed, this.player.x);
         this.collectibleManager.update(this.speed);
 
         this.wholePlatforms.forEach(platform => {

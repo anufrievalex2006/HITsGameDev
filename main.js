@@ -31,6 +31,9 @@ const levelConfigs = {
                 speedRange: { min: 1.6, max: 2.0 },
                 speedXRange: { min: -5, max: -3 },
                 heightRange: { min: 60, max: 120 }
+            },
+            branch: {
+                count: { min: 9, max: 20 },
             }
         },
         collectibleConfig: {
@@ -79,6 +82,9 @@ const levelConfigs = {
                 speedRange: { min: 2.0, max: 2.6 },
                 speedXRange: { min: -6, max: -3 },
                 heightRange: { min: 45, max: 90 }
+            },
+            branch: {
+                count: { min: 9, max: 20 },
             }
         },
         collectibleConfig: {
@@ -192,6 +198,30 @@ class LevelGenerator {
                 y: y,
                 speed: speed,
                 relativeSpeed: 2
+            });
+        }
+
+        const kBranchs = this.randomInt(
+            config.enemyConfig.branch.count.min,
+            config.enemyConfig.branch.count.max,
+            this.seed + 3000
+        );
+
+        for (let i = 0; i < kBranchs; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 3200
+            );
+            const y = platform.y - 40;
+
+            enemies.push({
+                type: "Branch",
+                x: x,
+                y: y,
+                speed: 0,
+                relativeSpeed: 0
             });
         }
 
