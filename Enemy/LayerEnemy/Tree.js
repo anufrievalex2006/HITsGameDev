@@ -4,8 +4,8 @@ export class Tree {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 300;
-        this.height = 600;
+        this.width = 260;
+        this.height = 500;
         this.type = data.type || 'Tree';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;

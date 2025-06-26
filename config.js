@@ -44,8 +44,8 @@ export const config = {
         tree: {
             sprite: {
                 src: "tree.png",
-                frameWidth: 600,
-                frameHeight: 502,
+                frameWidth: 578,
+                frameHeight: 611,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -55,8 +55,8 @@ export const config = {
         bush: {
             sprite: {
                 src: "bush.png",
-                frameWidth: 600,
-                frameHeight: 502,
+                frameWidth: 692,
+                frameHeight: 614,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -66,8 +66,8 @@ export const config = {
         clother: {
             sprite: {
                 src: "clothers.png",
-                frameWidth: 600,
-                frameHeight: 502,
+                frameWidth: 1374,
+                frameHeight: 746,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,

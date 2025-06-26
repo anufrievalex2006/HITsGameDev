@@ -4,8 +4,8 @@ export class Clother {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 300;
-        this.height = 300;
+        this.width = 120;
+        this.height = 80;
         this.type = data.type || 'Clother';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
