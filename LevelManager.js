@@ -20,6 +20,10 @@ export class LevelManager {
         return this.currentLevel?.enemies || [];
     }
 
+    getLayerEnemies() {
+        return this.currentLevel?.layerEnemies || [];
+    }
+
     getCollectible() {
         return this.currentLevel?.collectibles || [];
     }

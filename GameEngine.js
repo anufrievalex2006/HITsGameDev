@@ -4,6 +4,9 @@ import { Platform } from "./Platform.js";
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
 import { BulletEnemy } from './Enemy/Bullet.js';
+import { Tree } from './Enemy/LayerEnemy/Tree.js';
+import { Bush } from './Enemy/LayerEnemy/Bush.js';
+import { Clother } from './Enemy/LayerEnemy/Clother.js';
 import { BossEnemy } from './Enemy/Boss.js';
 import { SpeedUp } from './Collectible/SpeedUp.js';
 import { SpeedDown } from './Collectible/SpeedDown.js';
@@ -22,6 +25,7 @@ export class GameEngine {
         this.platformManager = new EntityManager();
         this.enemyManager = new EntityManager();
         this.collectibleManager = new EntityManager();
+        this.layerEnemyManager = new EntityManager();
         this.levelManager = new LevelManager(levels);
         this.score = 0;
         this.speed = config.obstacles.initialSpeed;
@@ -228,6 +232,68 @@ export class GameEngine {
         });
     }
 
+    spawnLayerEnemy() {
+        const enemies = this.levelManager.getLayerEnemies();
+        const viewportEnd = this.levelDistance + this.canvas.width;
+
+        enemies.forEach(enemyData => {
+            if (!enemyData.spawned && enemyData.x <= viewportEnd + 200) {
+                const screenX = enemyData.x - this.levelDistance + this.canvas.width;
+
+                let enemy;
+                const plat = this.findWholePlatformForEnemy(enemyData.x);
+                switch (enemyData.type) {
+                    case 'Tree':
+                        if (!plat) {
+                            return;
+                        }
+                        enemy = new Tree(
+                            screenX,
+                            plat.y - 600,
+                            enemyData
+                        );
+                        break;
+                    case 'Bush':
+                        if (!plat) {
+                            return;
+                        }
+                        enemy = new Bush(
+                            screenX,
+                            plat.y - 300,
+                            enemyData
+                        );
+                        break;
+                    case 'Clother':
+                        if (!plat) {
+                            return;
+                        }
+                        enemy = new Clother(
+                            screenX,
+                            plat.y - 200,
+                            enemyData
+                        );
+                        break;
+                    default:
+                        enemy = new Tree(
+                            screenX,
+                            this.canvas.height - 50,
+                            enemyData
+                        );
+                }
+
+                enemy.originalX = enemyData.x;
+                const platform = this.findWholePlatformForEnemy(enemy.originalX);
+                if (platform) {
+                    enemy.boundPlatform = platform;
+                    if (enemyData.relativeSpeed === undefined)
+                        enemy.relativeSpeed = 0;
+                }
+                this.layerEnemyManager.add(enemy);
+                enemyData.spawned = true;
+            }
+        });
+    }
+
     findWholePlatformForEnemy(enemyX) {
         for (const platform of this.wholePlatforms) {
             if (enemyX >= platform.x && enemyX <= platform.x + platform.width) {
@@ -241,6 +307,7 @@ export class GameEngine {
         if (!this.player) return;
         
         this.layer.update(1);
+        this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
         this.enemyManager.update(this.speed);
@@ -255,6 +322,7 @@ export class GameEngine {
         }
         this.levelDistance += this.speed;
 
+        this.spawnLayerEnemy();
         this.spawnEnemy();
         this.spawnCollectible();
         this.checkCollisions();
@@ -265,6 +333,7 @@ export class GameEngine {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.layer.draw(this.ctx);
+        this.layerEnemyManager.draw(this.ctx);
         this.platformManager.draw(this.ctx);
         this.drawGround(this.ctx);
         this.enemyManager.draw(this.ctx);
@@ -394,6 +463,7 @@ export class GameEngine {
             this.animationFrameId = null;
         }
 
+        this.layerEnemyManager.clear();
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();

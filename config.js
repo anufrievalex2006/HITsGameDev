@@ -40,6 +40,39 @@ export const config = {
                 frames: 1,
                 animationSpeed: 250
             }
+        },
+        tree: {
+            sprite: {
+                src: "tree.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
+        bush: {
+            sprite: {
+                src: "bush.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
+        clother: {
+            sprite: {
+                src: "clothers.png",
+                frameWidth: 600,
+                frameHeight: 502,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
         }
     },
     collectible: {
