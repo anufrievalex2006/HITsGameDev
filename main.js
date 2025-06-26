@@ -40,6 +40,17 @@ const levelConfigs = {
             speedDown: {
                 count: { min: 8, max: 15 }
             }
+        },
+        layerConfig: {
+            tree: {
+                count: { min: 20, max: 40 }
+            },
+            bush: {
+                count: { min: 25, max: 50 }
+            },
+            clother: {
+                count: { min: 1, max: 4 }
+            }
         }
     },
     moria: {
@@ -76,6 +87,17 @@ const levelConfigs = {
             },
             speedDown: {
                 count: { min: 8, max: 15 }
+            }
+        },
+        layerConfig: {
+            tree: {
+                count: { min: 20, max: 40 }
+            },
+            bush: {
+                count: { min: 25, max: 50 }
+            },
+            clother: {
+                count: { min: 1, max: 4 }
             }
         }
     }
@@ -208,6 +230,83 @@ class LevelGenerator {
         return enemies;
     }
 
+    generateLayer(config, platforms) {
+        const enemies = [];
+
+        const kTrees = this.randomInt(
+            config.layerConfig.tree.count.min,
+            config.layerConfig.tree.count.max,
+            this.seed + 2000
+        );
+
+        for (let i = 0; i < kTrees; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 2100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 2200
+            );
+            const y = platform.y - 40;
+
+            enemies.push({
+                type: "Tree",
+                x: x,
+                y: y,
+                speed: 0,
+                relativeSpeed: 0
+            });
+        }
+
+        const kBushs = this.randomInt(
+            config.layerConfig.bush.count.min,
+            config.layerConfig.bush.count.max,
+            this.seed + 3000
+        );
+
+        for (let i = 0; i < kBushs; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 3200
+            );
+            const y = platform.y - 40;
+
+            enemies.push({
+                type: "Bush",
+                x: x,
+                y: y,
+                speed: 0,
+                relativeSpeed: 0
+            });
+        }
+
+        const kClothers = this.randomInt(
+            config.layerConfig.bush.count.min,
+            config.layerConfig.bush.count.max,
+            this.seed + 3000
+        );
+
+        for (let i = 0; i < kClothers; i++) {
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
+            const x = this.randomRange(
+                platform.x + 20, 
+                platform.x + platform.width - 60,
+                this.seed + i + 3200
+            );
+            const y = platform.y - 40;
+
+            enemies.push({
+                type: "Clother",
+                x: x,
+                y: y,
+                speed: 0,
+                relativeSpeed: 0
+            });
+        }
+        return enemies;
+    }
+
     generateCollectibles(config, platforms) {
         const collectibles = [];
         const minDistance = 150;
@@ -284,6 +383,7 @@ class LevelGenerator {
         const platforms = this.generatePlatforms(config);
         const enemies = this.generateEnemies(config, platforms);
         const collectibles = this.generateCollectibles(config, platforms);
+        const layerEnemies = this.generateLayer(config, platforms);
 
         return {
             id: config.id,
@@ -292,7 +392,8 @@ class LevelGenerator {
             spawn: config.spawn,
             platforms: platforms,
             enemies: enemies,
-            collectibles: collectibles
+            collectibles: collectibles,
+            layerEnemies: layerEnemies
         };
     }
 
