@@ -39,6 +39,13 @@ export class GameEngine {
         this.groundHeight = 50;
         this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
 
+        this.lastEPressTime = 0;
+        this.ePressDelay = 1000;
+        this.isSpeedBoosted = false;
+        this.speedBoostDuration = 100;
+        this.speedBoostEndTime = 0;
+        this.originalSpeed = config.obstacles.initialSpeed;
+
         this.keyHandler = null;
         this.setupEventListeners();
     }
@@ -51,7 +58,7 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
-            if (e.key === "q" && this.gameRunning) {
+            if ((e.key === "q" || e.key === "й") && this.gameRunning) {
                 const screenX = 80;
                 let enemy = new BulletEnemy(
                             screenX,
@@ -59,6 +66,23 @@ export class GameEngine {
                             {type: "Bullet", speed: -5}
                         );
                 this.enemyManager.addInStart(enemy)
+            }
+            if ((e.key === "e" || e.key === "у") && this.gameRunning) {
+                const currentTime = performance.now();
+
+                if (currentTime - this.lastEPressTime >= this.ePressDelay) {
+                    this.lastEPressTime = currentTime;
+                    
+                    if (this.isSpeedBoosted) {
+                        this.speed = this.originalSpeed;
+                        this.isSpeedBoosted = false;
+                    }
+                    
+                    this.originalSpeed = this.speed;
+                    this.speed += 20;
+                    this.isSpeedBoosted = true;
+                    this.speedBoostEndTime = currentTime + this.speedBoostDuration;
+                }
             }
         };
 
@@ -305,6 +329,11 @@ export class GameEngine {
 
     update() {
         if (!this.player) return;
+
+        if (this.isSpeedBoosted && performance.now() >= this.speedBoostEndTime) {
+            this.speed = this.originalSpeed;
+            this.isSpeedBoosted = false;
+        }
         
         this.layer.update(1);
         this.layerEnemyManager.update(this.speed)
