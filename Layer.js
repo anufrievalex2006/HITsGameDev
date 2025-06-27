@@ -1,10 +1,11 @@
 export class Layer {
-    constructor(image, width, height) {
+    constructor(image, width, height, scale = 1) {
         this.x = 0;
         this.y = 0;
         this.image = image;
-        this.width = width;
-        this.height = height;
+        this.width = width * scale;
+        this.height = height * scale;
+        this.scale = scale;
     }
 
     update(speed) {
@@ -15,7 +16,19 @@ export class Layer {
     }
 
     draw(ctx) {
-        ctx.drawImage(this.image, this.x, this.y);
-        ctx.drawImage(this.image, this.x + this.width, this.y);
+        ctx.drawImage(
+            this.image, 
+            this.x, 
+            this.y, 
+            this.width, 
+            this.height
+        );
+        ctx.drawImage(
+            this.image, 
+            this.x + this.width, 
+            this.y, 
+            this.width, 
+            this.height
+        );
     }
 }

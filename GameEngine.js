@@ -43,7 +43,14 @@ export class GameEngine {
         this.groundImage = new Image();
         this.groundImage.src = "dirt.png";
         this.groundHeight = 50;
-        this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
+
+        this.scale1 = Math.min(this.canvas.width/735, this.canvas.height/414);
+        this.scale2 = Math.min(this.canvas.width/1920, this.canvas.height/1080);
+
+        this.layer1 = new Layer(document.getElementById('cloudLayer'), 735, 414, this.scale1);
+        this.layer2 = new Layer(document.getElementById('layer2'), 1920, 1080, this.scale2);
+        this.layer3 = new Layer(document.getElementById('layer3'), 1920, 1080, this.scale2);
+        this.layer4 = new Layer(document.getElementById('layer4'), 1920, 1080, this.scale2);
 
         this.lastEPressTime = 0;
         this.ePressDelay = 1000;
@@ -351,7 +358,11 @@ export class GameEngine {
             this.isSpeedBoosted = false;
         }
         
-        this.layer.update(1);
+        this.layer1.update(1);
+        this.layer2.update(1.25);
+        this.layer3.update(1.5);
+        this.layer4.update(1.75);
+
         this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
@@ -377,7 +388,11 @@ export class GameEngine {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.layer.draw(this.ctx);
+        this.layer1.draw(this.ctx);
+        this.layer2.draw(this.ctx);
+        this.layer3.draw(this.ctx);
+        this.layer4.draw(this.ctx);
+
         this.layerEnemyManager.draw(this.ctx);
         this.platformManager.draw(this.ctx);
         this.drawGround(this.ctx);

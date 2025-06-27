@@ -143,6 +143,10 @@ body, html {
     max-width: 600px;
 }
 
-#cloudLayer{
+
+#cloudLayer,
+#layer2,
+#layer3,
+#layer4{
     display: none;
 }

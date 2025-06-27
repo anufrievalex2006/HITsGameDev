@@ -1,118 +1,7 @@
-import { GameEngine } from "./GameEngine.js";
-import { LevelGenerator } from "./LevelGenerator.js";
+export class LevelGenerator {
 
-const canvas = document.getElementById("gameCanvas");
-canvas.width = 800;
-canvas.height = 400;
-
-const levelConfigs = {
-    weather_hills: {
-        id: "weather_hills",
-        name: "Weather Hills",
-        boss: "King-Wizard of Angmar",
-        spawn: { x: 50, y: 300 },
-        width: 25000,
-        difficulty: 1,
-        theme: "hills",
-        platformConfig: {
-            minWidth: 300,
-            maxWidth: 600,
-            minGap: 0,
-            maxGap: 0,
-            heightVariation: 100,
-            baseHeight: 300
-        },
-        enemyConfig: {
-            stoneEnemies: {
-                count: { min: 20, max: 30 },
-                speedRange: { min: 0.8, max: 1.2 }
-            },
-            nazgulEnemies: {
-                count: { min: 5, max: 10 },
-                speedRange: { min: 1.6, max: 2.0 },
-                speedXRange: { min: -5, max: -3 },
-                heightRange: { min: 60, max: 120 }
-            },
-            branch: {
-                count: { min: 9, max: 20 },
-            }
-        },
-        collectibleConfig: {
-            speedUp: {
-                count: { min: 9, max: 20 }
-            },
-            speedDown: {
-                count: { min: 8, max: 15 }
-            }
-        },
-        layerConfig: {
-            tree: {
-                count: { min: 20, max: 40 }
-            },
-            bush: {
-                count: { min: 25, max: 50 }
-            },
-            clother: {
-                count: { min: 1, max: 4 }
-            }
-        }
-    },
-    moria: {
-        id: "moria",
-        name: "Moria",
-        boss: "Balrog",
-        spawn: { x: 100, y: 200 },
-        width: 35000,
-        difficulty: 2,
-        theme: "cave",
-        platformConfig: {
-            minWidth: 300,
-            maxWidth: 600,
-            minGap: 100,
-            maxGap: 250,
-            heightVariation: 100,
-            baseHeight: 300
-        },
-        enemyConfig: {
-            stoneEnemies: {
-                count: { min: 9, max: 20 },
-                speedRange: { min: 1.0, max: 1.5 }
-            },
-            nazgulEnemies: {
-                count: { min: 8, max: 15 },
-                speedRange: { min: 2.0, max: 2.6 },
-                speedXRange: { min: -6, max: -3 },
-                heightRange: { min: 45, max: 90 }
-            },
-            branch: {
-                count: { min: 9, max: 20 },
-            }
-        },
-        collectibleConfig: {
-            speedUp: {
-                count: { min: 9, max: 20 }
-            },
-            speedDown: {
-                count: { min: 8, max: 15 }
-            }
-        },
-        layerConfig: {
-            tree: {
-                count: { min: 20, max: 40 }
-            },
-            bush: {
-                count: { min: 25, max: 50 }
-            },
-            clother: {
-                count: { min: 1, max: 4 }
-            }
-        }
-    }
-};
-
-const levelGenerator = new LevelGenerator(levelConfigs);
-class LevelGenerator {
-    constructor() {
+    constructor(levelConfigs) {
+        this.levelConfigs = levelConfigs;
         this.seed = Date.now();
     }
 
@@ -127,6 +16,23 @@ class LevelGenerator {
 
     randomInt(min, max, seed = this.seed) {
         return Math.floor(this.randomRange(min, max + 1, seed));
+    }
+
+    insertIntoSortedArray(arr, newElement, compareFun = (a, b) => a.x - b.x) {
+        let left = 0;
+        let right = arr.length;
+
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (compareFun(newElement, arr[mid]) < 0) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        arr.splice(left, 0, newElement);
+        return arr;
     }
 
     generatePlatforms(config) {
@@ -172,7 +78,8 @@ class LevelGenerator {
     }
 
     generateEnemies(config, platforms) {
-        const enemies = [];
+        let enemies = [];
+        let availablePlatforms = [...platforms];
 
         const kStones = this.randomInt(
             config.enemyConfig.stoneEnemies.count.min,
@@ -181,13 +88,19 @@ class LevelGenerator {
         );
 
         for (let i = 0; i < kStones; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 1100)];
+            if (availablePlatforms.length === 0) break;
+        
+            const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 1100);
+            const platform = availablePlatforms[platformIndex];
+
             const x = this.randomRange(
-                platform.x + 20, 
-                platform.x + platform.width - 60,
+                platform.x + platform.width * 0.3, 
+                platform.x + platform.width * 0.7,
                 this.seed + i + 1200
             );
+
             const y = platform.y - 40;
+
             const speed = this.randomRange(
                 config.enemyConfig.stoneEnemies.speedRange.min,
                 config.enemyConfig.stoneEnemies.speedRange.max,
@@ -201,7 +114,11 @@ class LevelGenerator {
                 speed: speed,
                 relativeSpeed: 2
             });
+
+            availablePlatforms.splice(platformIndex, 1);
         }
+
+        enemies = enemies.sort((a, b) => a.x - b.x);
 
         const kBranchs = this.randomInt(
             config.enemyConfig.branch.count.min,
@@ -209,23 +126,71 @@ class LevelGenerator {
             this.seed + 3000
         );
 
+        let banchs = [];
+
         for (let i = 0; i < kBranchs; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
+            if (availablePlatforms.length === 0) break;
+
+            const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 3100);
+            const platform = availablePlatforms[platformIndex];
+
             const x = this.randomRange(
-                platform.x + 20, 
-                platform.x + platform.width - 60,
+                platform.x + platform.width * 0.3, 
+                platform.x + platform.width * 0.7,
                 this.seed + i + 3200
             );
-            const y = platform.y - 40;
 
-            enemies.push({
-                type: "Branch",
-                x: x,
-                y: y,
-                speed: 0,
-                relativeSpeed: 0
-            });
+            const y = platform.y - 40;
+            if(banchs.length == 0){
+                banchs.push({
+                    type: "Branch",
+                    x: x,
+                    y: y,
+                    speed: 0,
+                    relativeSpeed: 0
+                });
+            }else if(banchs.length == 1){
+                banchs.push({
+                    type: "Branch",
+                    x: x,
+                    y: y,
+                    speed: 0,
+                    relativeSpeed: 0
+                });
+                banchs = banchs.sort((a, b) => a.x - b.x);
+            } else {
+                this.insertIntoSortedArray(
+                    banchs,
+                    {
+                        type: "Branch",
+                        x: x,
+                        y: y,
+                        speed: 0,
+                        relativeSpeed: 0
+                    }
+                );
+            }
         }
+
+        if(banchs.length != 0){
+            this.insertIntoSortedArray(enemies, banchs[0]);
+        }
+        for(let i = 1; i < banchs.length; ++i){
+            if(banchs[i].x - banchs[i-1].x < 30 || banchs[i].x - banchs[i-1].x > 200){
+                this.insertIntoSortedArray(enemies, banchs[i]);
+            }
+        }
+
+        let toDelete = [];
+        for(let i = 0; i < enemies.length - 1; ++i){
+            if(enemies[i].type === "Branch" && enemies[i+1].type === "Stone"){
+                if(enemies[i + 1].x - enemies[i].x < 100){
+                    toDelete.push(enemies[i+1]);
+                }
+            }
+        }
+        enemies = enemies.filter(enemy => !toDelete.includes(enemy));
+        enemies = enemies.sort((a, b) => a.x - b.x);
 
         const kNazguls = this.randomInt(
             config.enemyConfig.nazgulEnemies.count.min,
@@ -259,6 +224,7 @@ class LevelGenerator {
                 speedX: speedX
             });
         }
+        enemies = enemies.sort((a, b) => a.x - b.x);
         return enemies;
     }
 
@@ -275,10 +241,10 @@ class LevelGenerator {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 2100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 280,
+                platform.x + platform.width - 60,
                 this.seed + i + 2200
             );
-            const y = platform.y - 500;
+            const y = platform.y - 40;
 
             enemies.push({
                 type: "Tree",
@@ -299,10 +265,10 @@ class LevelGenerator {
             const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 65,
+                platform.x + platform.width - 60,
                 this.seed + i + 3200
             );
-            const y = platform.y - 30;
+            const y = platform.y - 40;
 
             enemies.push({
                 type: "Bush",
@@ -314,19 +280,19 @@ class LevelGenerator {
         }
 
         const kClothers = this.randomInt(
-            config.layerConfig.clother.count.min,
-            config.layerConfig.clother.count.max,
-            this.seed + 4000
+            config.layerConfig.bush.count.min,
+            config.layerConfig.bush.count.max,
+            this.seed + 3000
         );
 
         for (let i = 0; i < kClothers; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 4100)];
+            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
             const x = this.randomRange(
                 platform.x + 20, 
-                platform.x + platform.width - 140,
-                this.seed + i + 4200
+                platform.x + platform.width - 60,
+                this.seed + i + 3200
             );
-            const y = platform.y - 80;
+            const y = platform.y - 40;
 
             enemies.push({
                 type: "Clother",
@@ -398,7 +364,7 @@ class LevelGenerator {
     }
 
     generateLevel(levelId) {
-        const config = levelConfigs[levelId];
+        const config = this.levelConfigs[levelId];
         if (!config) {
             console.error(`Level config not found for ${levelId}`);
             return null;
@@ -438,39 +404,5 @@ class LevelGenerator {
         }
         return Math.abs(hash);
     }
+
 }
-
-const levels = Object.keys(levelConfigs).map(id =>
-    levelGenerator.generateLevel(id)
-).filter(level => level !== null);
-
-const game = new GameEngine(canvas, levels);
-
-document.querySelectorAll(".levelBtn").forEach(button => {
-    button.addEventListener("click", () => {
-        const levelId = button.dataset.level;
-        game.stop();
-        if (game.loadLevel(levelId)) {
-            $("#map").hide();
-            $("#gameScreen").show();
-            game.start();
-        }
-    });
-});
-
-document.getElementById("backFromGame").addEventListener("click", () => {
-    game.stop();
-    game.resetLevel();
-    $("#gameScreen").hide();
-    $("#map").show();
-});
-
-document.getElementById("playBtn").addEventListener("click", () => {
-    $("#mainMenu").hide();
-    $("#map").show();
-});
-
-document.getElementById("backFromLevels").addEventListener("click", () => {
-    $("#map").hide();
-    $("#mainMenu").show();
-});
