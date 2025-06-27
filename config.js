@@ -15,7 +15,7 @@ export const config = {
             framesPerRow: 8,
             rows: 1,
             frames: 8,
-            animationSpeed: 200
+            animationSpeed: 120
         }
     },
     enemies: {

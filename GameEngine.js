@@ -293,7 +293,7 @@ export class GameEngine {
                         }
                         enemy = new Tree(
                             screenX,
-                            plat.y - 490,
+                            enemyData.y,
                             enemyData
                         );
                         break;
@@ -303,7 +303,7 @@ export class GameEngine {
                         }
                         enemy = new Bush(
                             screenX,
-                            plat.y - 30,
+                            enemyData.y,
                             enemyData
                         );
                         break;
@@ -313,14 +313,17 @@ export class GameEngine {
                         }
                         enemy = new Clother(
                             screenX,
-                            plat.y - 90,
+                            enemyData.y,
                             enemyData
                         );
                         break;
                     default:
+                        if (!plat) {
+                            return;
+                        }
                         enemy = new Tree(
                             screenX,
-                            plat.y,
+                            enemyData.y,
                             enemyData
                         );
                 }
@@ -506,6 +509,7 @@ export class GameEngine {
         
         this.originalEnemies = JSON.parse(JSON.stringify(this.levelManager.getEnemies()));
         this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
+        this.originalLayerEnemies = JSON.parse(JSON.stringify(this.levelManager.getLayerEnemies()));
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
 
@@ -538,6 +542,9 @@ export class GameEngine {
             this.levelManager.setPlatforms(JSON.parse(JSON.stringify(this.originalWholePlatforms)));
             this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         }
+        if (this.originalLayerEnemies.length > 0) {
+            this.levelManager.setLayerEnemies(JSON.parse(JSON.stringify(this.originalLayerEnemies)));
+        }
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
@@ -553,6 +560,10 @@ export class GameEngine {
                 if (enemy.passed) enemy.passed = false;
             });
             currentLevel.collectibles.forEach(enemy => {
+                enemy.spawned = false;
+                if (enemy.passed) enemy.passed = false;
+            });
+            currentLevel.layerEnemies.forEach(enemy => {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
             });

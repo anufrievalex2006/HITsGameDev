@@ -60,6 +60,12 @@ export class LevelManager {
         }
     }
 
+    setLayerEnemies(layerEnemies) {
+        if (this.currentLevel) {
+            this.currentLevel.layerEnemies = layerEnemies;
+        }
+    }
+
     getSpawnPoint() {
         return this.currentLevel?.spawn || { x: 50, y: 300 };
     }
