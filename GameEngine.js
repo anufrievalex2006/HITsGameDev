@@ -293,7 +293,7 @@ export class GameEngine {
                         }
                         enemy = new Tree(
                             screenX,
-                            enemyData.y,
+                            plat.y - 500,
                             enemyData
                         );
                         break;
@@ -303,7 +303,7 @@ export class GameEngine {
                         }
                         enemy = new Bush(
                             screenX,
-                            enemyData.y,
+                            plat.y - 30,
                             enemyData
                         );
                         break;
@@ -313,7 +313,7 @@ export class GameEngine {
                         }
                         enemy = new Clother(
                             screenX,
-                            enemyData.y,
+                            plat.y - 80,
                             enemyData
                         );
                         break;
