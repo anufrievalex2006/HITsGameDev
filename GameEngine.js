@@ -477,10 +477,10 @@ export class GameEngine {
 
     isColliding(player, obstacle) {
         return (
-            player.x < obstacle.x + obstacle.width &&
-            player.x + player.width > obstacle.x &&
-            player.y < obstacle.y + obstacle.height &&
-            player.y + player.height > obstacle.y
+            player.x < obstacle.x + obstacle.width - 6 &&
+            player.x + player.width > obstacle.x + 6 &&
+            player.y < obstacle.y + obstacle.height - 12 &&
+            player.y + player.height > obstacle.y + 12
         );
     }
 
