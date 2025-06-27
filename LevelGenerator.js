@@ -132,7 +132,7 @@ export class LevelGenerator {
             if (availablePlatforms.length === 0) break;
 
             const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 3100);
-            const platform = platforms[platformIndex];
+            const platform = availablePlatforms[platformIndex];
 
             const x = this.randomRange(
                 platform.x + platform.width * 0.3, 
@@ -180,6 +180,17 @@ export class LevelGenerator {
                 this.insertIntoSortedArray(enemies, banchs[i]);
             }
         }
+
+        let toDelete = [];
+        for(let i = 0; i < enemies.length - 1; ++i){
+            if(enemies[i].type === "Branch" && enemies[i+1].type === "Stone"){
+                if(enemies[i + 1].x - enemies[i].x < 100){
+                    toDelete.push(enemies[i+1]);
+                }
+            }
+        }
+        enemies = enemies.filter(enemy => !toDelete.includes(enemy));
+        enemies = enemies.sort((a, b) => a.x - b.x);
 
         const kNazguls = this.randomInt(
             config.enemyConfig.nazgulEnemies.count.min,
