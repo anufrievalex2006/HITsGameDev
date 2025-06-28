@@ -491,8 +491,7 @@ export class GameEngine {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
 
-        const finalScore = this.score;
-        alert(`Game Over! Score: ${finalScore}`);
+        alert(`Game Over! Score: ${this.score}`);
         this.resetLevel();
         setTimeout(() => {
             this.start();
