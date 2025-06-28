@@ -55,8 +55,8 @@ export const config = {
         tree: {
             sprite: {
                 src: "tree.png",
-                frameWidth: 578,
-                frameHeight: 611,
+                frameWidth: 370,
+                frameHeight: 343,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
