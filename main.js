@@ -47,10 +47,10 @@ const levelConfigs = {
         },
         layerConfig: {
             tree: {
-                count: { min: 20, max: 40 }
+                count: { min: 10, max: 20 }
             },
             bush: {
-                count: { min: 25, max: 50 }
+                count: { min: 25, max: 30 }
             },
             clother: {
                 count: { min: 1, max: 4 }
@@ -85,7 +85,7 @@ const levelConfigs = {
                 heightRange: { min: 45, max: 90 }
             },
             branch: {
-                count: { min: 8, max: 15 },
+                count: { min: 4, max: 13 },
             }
         },
         collectibleConfig: {
@@ -98,10 +98,10 @@ const levelConfigs = {
         },
         layerConfig: {
             tree: {
-                count: { min: 20, max: 40 }
+                count: { min: 10, max: 20 }
             },
             bush: {
-                count: { min: 25, max: 50 }
+                count: { min: 25, max: 30 }
             },
             clother: {
                 count: { min: 1, max: 4 }

@@ -669,8 +669,9 @@ export class GameEngine {
 
     gameWin() {
         this.gameRunning = false;
+        const finalScore = this.score;
         this.resetLevel();
-        alert(`Победа! Игра завершена. Счет: ${this.score}`);
+        alert(`Победа! Игра завершена. Счет: ${finalScore}`);
         this.stop()
         $("#gameScreen").hide();
         $("#map").show();
