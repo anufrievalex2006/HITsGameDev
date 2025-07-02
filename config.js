@@ -21,7 +21,7 @@ export const config = {
     enemies: {
         stone: {
             sprite: {
-                src: "stone.png",
+                src: "Images/Enemies/stone.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
@@ -32,7 +32,7 @@ export const config = {
         },
         nazgul: {
             sprite: {
-                src: "nazgul.png",
+                src: "Images/Enemies/nazgul.png",
                 frameWidth: 600,
                 frameHeight: 242,
                 framesPerRow: 1,
@@ -43,7 +43,7 @@ export const config = {
         },
         branch: {
             sprite: {
-                src: "branch.png",
+                src: "Images/Enemies/branch.png",
                 frameWidth: 1158,
                 frameHeight: 930,
                 framesPerRow: 1,
@@ -54,7 +54,7 @@ export const config = {
         },
         hitdown: {
             sprite: {
-                src: "villager.png",
+                src: "Images/Enemies/villager.png",
                 frameWidth: 311,
                 frameHeight: 600,
                 framesPerRow: 1,
@@ -69,7 +69,7 @@ export const config = {
         height: 150,
         speedUp: {
             sprite: {
-                src: "speedUp.png",
+                src: "Images/Enemies/speedUp.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
@@ -80,7 +80,7 @@ export const config = {
         },
         speedDown: {
             sprite: {
-                src: "speedDown.png",
+                src: "Images/Enemies/speedDown.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
