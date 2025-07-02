@@ -12,12 +12,6 @@ import { HitDownEnemy } from "./Enemy/HitDownEnemy.js"
 import { Branch } from './Enemy/Branch.js';
 import { BossEnemy } from './Enemy/Boss.js';
 
-import { BulletEnemy } from './Enemy/Bullet.js';
-
-import { Tree } from './Enemy/LayerEnemy/Tree.js';
-import { Bush } from './Enemy/LayerEnemy/Bush.js';
-import { Clother } from './Enemy/LayerEnemy/Clother.js';
-
 import { SpeedUp } from './Collectible/SpeedUp.js';
 import { SpeedDown } from './Collectible/SpeedDown.js';
 
@@ -32,7 +26,6 @@ export class GameEngine {
         this.platformManager = new EntityManager();
         this.enemyManager = new EntityManager();
         this.collectibleManager = new EntityManager();
-        this.layerEnemyManager = new EntityManager();
         this.levelManager = new LevelManager(levels);
         this.score = 0;
         this.speed = config.obstacles.initialSpeed;
@@ -72,14 +65,11 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
+            if ((e.key === "w" || e.key === "ц") && this.gameRunning) {
+                this.player?.changeShootType();
+            }
             if ((e.key === "q" || e.key === "й") && this.gameRunning) {
-                const screenX = 80;
-                let enemy = new BulletEnemy(
-                            screenX,
-                            this.player?.y,
-                            {type: "Bullet", speed: -5}
-                        );
-                this.enemyManager.addInStart(enemy)
+                this.player?.shoot(this.enemyManager);
             }
             if ((e.key === "e" || e.key === "у") && this.gameRunning) {
                 const currentTime = performance.now();
@@ -287,71 +277,6 @@ export class GameEngine {
         });
     }
 
-    spawnLayerEnemy() {
-        const enemies = this.levelManager.getLayerEnemies();
-        const viewportEnd = this.levelDistance + this.canvas.width;
-
-        enemies.forEach(enemyData => {
-            if (!enemyData.spawned && enemyData.x <= viewportEnd + 200) {
-                const screenX = enemyData.x - this.levelDistance + this.canvas.width;
-
-                let enemy;
-                const plat = this.findWholePlatformForEnemy(enemyData.x);
-                switch (enemyData.type) {
-                    case 'Tree':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Tree(
-                            screenX,
-                            plat.y - 500,
-                            enemyData
-                        );
-                        break;
-                    case 'Bush':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Bush(
-                            screenX,
-                            plat.y - 30,
-                            enemyData
-                        );
-                        break;
-                    case 'Clother':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Clother(
-                            screenX,
-                            plat.y - 80,
-                            enemyData
-                        );
-                        break;
-                    default:
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Tree(
-                            screenX,
-                            enemyData.y,
-                            enemyData
-                        );
-                }
-
-                enemy.originalX = enemyData.x;
-                const platform = this.findWholePlatformForEnemy(enemy.originalX);
-                if (platform) {
-                    enemy.boundPlatform = platform;
-                    if (enemyData.relativeSpeed === undefined)
-                        enemy.relativeSpeed = 0;
-                }
-                this.layerEnemyManager.add(enemy);
-                enemyData.spawned = true;
-            }
-        });
-    }
-
     findWholePlatformForEnemy(enemyX) {
         for (const platform of this.wholePlatforms) {
             if (enemyX >= platform.x && enemyX <= platform.x + platform.width) {
@@ -374,7 +299,6 @@ export class GameEngine {
         this.layer3.update(1.5);
         this.layer4.update(1.75);
 
-        this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
         this.enemyManager.update(this.speed, this.player.x);
@@ -389,7 +313,6 @@ export class GameEngine {
         }
         this.levelDistance += this.speed;
 
-        this.spawnLayerEnemy();
         this.spawnEnemy();
         this.spawnCollectible();
         this.checkCollisions();
@@ -404,7 +327,6 @@ export class GameEngine {
         this.layer3.draw(this.ctx);
         this.layer4.draw(this.ctx);
 
-        this.layerEnemyManager.draw(this.ctx);
         this.platformManager.draw(this.ctx);
         this.drawGround(this.ctx);
         this.enemyManager.draw(this.ctx);
@@ -441,7 +363,7 @@ export class GameEngine {
             this.enemyManager.entities.forEach(enemy => {
                 if(enemy.type != "Boss" && enemy.type === "Bullet"){
                     if(this.isColliding(enemy, boss) && !enemy.hitBoss){
-                        this.BossHP -= 10;
+                        this.BossHP -= enemy.damage;
                         enemy.hitBoss = true;
                         enemy.shouldRemove = true;
 
@@ -464,7 +386,7 @@ export class GameEngine {
         bullets.forEach(bullet => {
             hitdownEnemies.forEach(enemy => {
                 if (this.isColliding(bullet, enemy)) {
-                    if (enemy.takeDamage()) {
+                    if (enemy.takeDamage(enemy.damage)) {
                         bullet.shouldRemove = true;
                         this.score += 1;
 
@@ -551,7 +473,6 @@ export class GameEngine {
             this.animationFrameId = null;
         }
 
-        this.layerEnemyManager.clear();
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();
@@ -591,10 +512,6 @@ export class GameEngine {
                 }
             });
             currentLevel.collectibles.forEach(enemy => {
-                enemy.spawned = false;
-                if (enemy.passed) enemy.passed = false;
-            });
-            currentLevel.layerEnemies.forEach(enemy => {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
             });

@@ -7,6 +7,7 @@ export class BulletEnemy {
         this.type = data.type || 'Bullet';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
+        this.damage = data.damage || 10
     }
 
     update(speed) {

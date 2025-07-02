@@ -62,9 +62,9 @@ export class HitDownEnemy {
         this.updateAnimation();
     }
 
-    takeDamage() {
+    takeDamage(damage) {
         if (this.hitCooldown <= 0) {
-            this.curHealth--;
+            this.curHealth -= (damage/10);
             this.hitCooldown = this.hitCooldownTime;
 
             if (this.curHealth <= 0)

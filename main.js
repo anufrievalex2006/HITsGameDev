@@ -48,17 +48,6 @@ const levelConfigs = {
             speedDown: {
                 count: { min: 8, max: 15 }
             }
-        },
-        layerConfig: {
-            tree: {
-                count: { min: 10, max: 20 }
-            },
-            bush: {
-                count: { min: 25, max: 30 }
-            },
-            clother: {
-                count: { min: 1, max: 4 }
-            }
         }
     },
     moria: {
@@ -102,17 +91,6 @@ const levelConfigs = {
             },
             speedDown: {
                 count: { min: 8, max: 15 }
-            }
-        },
-        layerConfig: {
-            tree: {
-                count: { min: 10, max: 20 }
-            },
-            bush: {
-                count: { min: 25, max: 30 }
-            },
-            clother: {
-                count: { min: 1, max: 4 }
             }
         }
     }
