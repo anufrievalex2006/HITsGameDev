@@ -8,6 +8,7 @@ import { Layer } from "./Layer.js"
 
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { HitDownEnemy } from "./Enemy/HitDownEnemy.js"
 import { Branch } from './Enemy/Branch.js';
 import { BossEnemy } from './Enemy/Boss.js';
 
@@ -203,6 +204,16 @@ export class GameEngine {
                         enemy = new Branch(
                             screenX,
                             0,
+                            enemyData
+                        );
+                        break;
+                    case 'Hitdown':
+                        const platHitdown = this.findWholePlatformForEnemy(enemyData.x);
+                        if (!platHitdown)
+                            return;
+                        enemy = new HitDownEnemy(
+                            screenX,
+                            platHitdown.y - 50,
                             enemyData
                         );
                         break;
@@ -441,12 +452,29 @@ export class GameEngine {
                 }
             });
 
-            this.enemyManager.entities = this.enemyManager.entities.filter(e => !e.shouldRemove);
             if (this.BossHP <= 0) {
+                this.enemyManager.entities = this.enemyManager.entities.filter(e => !(e.type === "Bullet" && e.shouldRemove));
                 this.gameWin();
                 return;
             }
         }
+
+        const bullets = this.enemyManager.entities.filter(e => e.type === "Bullet" && !e.shouldRemove);
+        const hitdownEnemies = this.enemyManager.entities.filter(e => e.type === "Hitdown" && !e.shouldRemove);
+        bullets.forEach(bullet => {
+            hitdownEnemies.forEach(enemy => {
+                if (this.isColliding(bullet, enemy)) {
+                    if (enemy.takeDamage()) {
+                        bullet.shouldRemove = true;
+                        this.score += 1;
+
+                        if (enemy.shouldRemove)
+                            this.score += 5;
+                    }
+                }
+            });
+        });
+        this.enemyManager.entities = this.enemyManager.entities.filter(e => !e.shouldRemove);
         
         this.enemyManager.entities.forEach(enemy => {
             if (this.isColliding(this.player, enemy) && enemy.type != "Bullet") {
@@ -557,6 +585,10 @@ export class GameEngine {
             currentLevel.enemies.forEach(enemy => {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
+                if (enemy.type === "Hitdown") {
+                    enemy.curHealth = 3;
+                    enemy.shouldRemove = false;
+                }
             });
             currentLevel.collectibles.forEach(enemy => {
                 enemy.spawned = false;

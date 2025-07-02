@@ -33,6 +33,10 @@ const levelConfigs = {
                 speedXRange: { min: -5, max: -3 },
                 heightRange: { min: 60, max: 120 }
             },
+            hitdownEnemies: {
+                count: { min: 5, max: 10 },
+                speedRange: { min: 1.0, max: 1.5 }
+            },
             branch: {
                 count: { min: 4, max: 13 },
             }
@@ -83,6 +87,10 @@ const levelConfigs = {
                 speedRange: { min: 2.0, max: 2.6 },
                 speedXRange: { min: -6, max: -3 },
                 heightRange: { min: 45, max: 90 }
+            },
+            hitdownEnemies: {
+                count: { min: 10, max: 16 },
+                speedRange: { min: 1.2, max: 1.8 }
             },
             branch: {
                 count: { min: 4, max: 13 },
