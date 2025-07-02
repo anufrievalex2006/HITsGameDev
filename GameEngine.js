@@ -386,7 +386,7 @@ export class GameEngine {
         bullets.forEach(bullet => {
             hitdownEnemies.forEach(enemy => {
                 if (this.isColliding(bullet, enemy)) {
-                    if (enemy.takeDamage(enemy.damage)) {
+                    if (enemy.takeDamage(bullet.damage)) {
                         bullet.shouldRemove = true;
                         this.score += 1;
 
@@ -507,7 +507,7 @@ export class GameEngine {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
                 if (enemy.type === "Hitdown") {
-                    enemy.curHealth = 3;
+                    enemy.curHealth = 6;
                     enemy.shouldRemove = false;
                 }
             });
