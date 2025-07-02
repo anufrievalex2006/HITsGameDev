@@ -1,4 +1,5 @@
 import { config } from "./config.js";
+import { BulletEnemy } from './Enemy/Bullet.js';
 
 export class Player {
     constructor(x, y) {
@@ -8,6 +9,13 @@ export class Player {
         this.y = y;
         this.velocityY = 0;
         this.isJumping = false;
+        this.typeShoot = 1;
+
+        this.lastShotTime = 0;
+        this.shootDelay = {
+            1: 0,
+            2: 500
+        };
 
         this.sprite = new Image();
         this.sprite.src = config.player.sprite.src;
@@ -87,6 +95,38 @@ export class Player {
         if (!this.isJumping) {
             this.velocityY = config.player.jumpForce;
             this.isJumping = true;
+        }
+    }
+
+    shoot(enemyManager) {
+        const currentTime = Date.now();
+        const delay = this.shootDelay[this.typeShoot];
+
+        if (this.typeShoot === 2 && currentTime - this.lastShotTime < delay) {
+            return false;
+        }
+
+        const screenX = this.x + 10;
+        let damage = 10;
+        if(this.typeShoot === 1){
+            damage = 10;
+        }else if(this.typeShoot === 2){
+            damage = 50;
+        }
+        let enemy = new BulletEnemy(
+            screenX,
+            this.y,
+            { type: "Bullet", speed: -5, damage: damage }
+        );
+        enemyManager.addInStart(enemy)
+        this.lastShotTime = currentTime;
+        return true;
+    }
+
+    changeShootType() {
+        this.typeShoot++;
+        if(this.typeShoot >= 3){
+            this.typeShoot = 1;
         }
     }
 }

@@ -12,8 +12,6 @@ import { HitDownEnemy } from "./Enemy/HitDownEnemy.js"
 import { Branch } from './Enemy/Branch.js';
 import { BossEnemy } from './Enemy/Boss.js';
 
-import { BulletEnemy } from './Enemy/Bullet.js';
-
 import { Tree } from './Enemy/LayerEnemy/Tree.js';
 import { Bush } from './Enemy/LayerEnemy/Bush.js';
 import { Clother } from './Enemy/LayerEnemy/Clother.js';
@@ -72,14 +70,11 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
+            if ((e.key === "w" || e.key === "ц") && this.gameRunning) {
+                this.player?.changeShootType();
+            }
             if ((e.key === "q" || e.key === "й") && this.gameRunning) {
-                const screenX = 80;
-                let enemy = new BulletEnemy(
-                            screenX,
-                            this.player?.y,
-                            {type: "Bullet", speed: -5}
-                        );
-                this.enemyManager.addInStart(enemy)
+                this.player?.shoot(this.enemyManager);
             }
             if ((e.key === "e" || e.key === "у") && this.gameRunning) {
                 const currentTime = performance.now();
@@ -441,7 +436,7 @@ export class GameEngine {
             this.enemyManager.entities.forEach(enemy => {
                 if(enemy.type != "Boss" && enemy.type === "Bullet"){
                     if(this.isColliding(enemy, boss) && !enemy.hitBoss){
-                        this.BossHP -= 10;
+                        this.BossHP -= enemy.damage;
                         enemy.hitBoss = true;
                         enemy.shouldRemove = true;
 
@@ -464,7 +459,7 @@ export class GameEngine {
         bullets.forEach(bullet => {
             hitdownEnemies.forEach(enemy => {
                 if (this.isColliding(bullet, enemy)) {
-                    if (enemy.takeDamage()) {
+                    if (enemy.takeDamage(enemy.damage)) {
                         bullet.shouldRemove = true;
                         this.score += 1;
 
