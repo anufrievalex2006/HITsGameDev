@@ -52,39 +52,6 @@ export const config = {
                 animationSpeed: 250
             }
         },
-        tree: {
-            sprite: {
-                src: "tree.png",
-                frameWidth: 370,
-                frameHeight: 343,
-                framesPerRow: 1,
-                rows: 1,
-                frames: 1,
-                animationSpeed: 250
-            }
-        },
-        bush: {
-            sprite: {
-                src: "bush.png",
-                frameWidth: 692,
-                frameHeight: 614,
-                framesPerRow: 1,
-                rows: 1,
-                frames: 1,
-                animationSpeed: 250
-            }
-        },
-        clother: {
-            sprite: {
-                src: "clothers.png",
-                frameWidth: 1374,
-                frameHeight: 746,
-                framesPerRow: 1,
-                rows: 1,
-                frames: 1,
-                animationSpeed: 250
-            }
-        },
         hitdown: {
             sprite: {
                 src: "villager.png",
