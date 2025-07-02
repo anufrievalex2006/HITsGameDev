@@ -84,6 +84,17 @@ export const config = {
                 frames: 1,
                 animationSpeed: 250
             }
+        },
+        hitdown: {
+            sprite: {
+                src: "villager.png",
+                frameWidth: 311,
+                frameHeight: 600,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
         }
     },
     collectible: {

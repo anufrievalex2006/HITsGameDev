@@ -118,6 +118,39 @@ export class LevelGenerator {
             availablePlatforms.splice(platformIndex, 1);
         }
 
+        const kHitdowns = this.randomInt(
+            config.enemyConfig.hitdownEnemies.count.min,
+            config.enemyConfig.hitdownEnemies.count.max,
+            this.seed + 4000
+        );
+
+        for (let i = 0; i < kHitdowns; i++) {
+            if (availablePlatforms.length === 0) break;
+
+            const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 4100);
+            const platform = availablePlatforms[platformIndex];
+
+            const x = this.randomRange(
+                platform.x + platform.width * 0.3,
+                platform.x + platform.width * 0.7
+            );
+            const y = platform.y - 50;
+            const speed = this.randomRange(
+                config.enemyConfig.hitdownEnemies.speedRange.min,
+                config.enemyConfig.hitdownEnemies.speedRange.max,
+                this.seed + i + 4300
+            );
+            enemies.push({
+                type: "Hitdown",
+                x: x,
+                y: y,
+                speed: speed,
+                relativeSpeed: 2
+            });
+
+            availablePlatforms.splice(platformIndex, 1);
+        }
+
         enemies = enemies.sort((a, b) => a.x - b.x);
 
         const kBranchs = this.randomInt(
