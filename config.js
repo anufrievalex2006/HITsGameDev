@@ -55,8 +55,8 @@ export const config = {
         hitdown: {
             sprite: {
                 src: "Images/Enemies/villager.png",
-                frameWidth: 311,
-                frameHeight: 600,
+                frameWidth: 1024,
+                frameHeight: 1536,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -101,7 +101,7 @@ export const config = {
         segmentHeight: 20,
         sprite: {
                 src: "Images/platform.png",
-                frameWidth: 1536,
+                frameWidth: 1292,
                 frameHeight: 1024,
                 framesPerRow: 1,
                 rows: 1,
