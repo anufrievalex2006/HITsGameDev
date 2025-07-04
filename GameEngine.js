@@ -4,7 +4,7 @@ import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
-import { Layer } from "./Layer.js"
+import { Background } from "./Background.js";
 
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
@@ -41,10 +41,7 @@ export class GameEngine {
         this.scale1 = Math.min(this.canvas.width/735, this.canvas.height/414);
         this.scale2 = Math.min(this.canvas.width/1920, this.canvas.height/1080);
 
-        this.layer1 = new Layer(document.getElementById('cloudLayer'), 735, 414, this.scale1);
-        this.layer2 = new Layer(document.getElementById('layer2'), 1920, 1080, this.scale2);
-        this.layer3 = new Layer(document.getElementById('layer3'), 1920, 1080, this.scale2);
-        this.layer4 = new Layer(document.getElementById('layer4'), 1920, 1080, this.scale2);
+        this.background = null;
 
         this.lastEPressTime = 0;
         this.ePressDelay = 1000;
@@ -294,10 +291,7 @@ export class GameEngine {
             this.isSpeedBoosted = false;
         }
         
-        this.layer1.update(1);
-        this.layer2.update(1.25);
-        this.layer3.update(1.5);
-        this.layer4.update(1.75);
+        this.background.update(1);
 
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
@@ -322,10 +316,7 @@ export class GameEngine {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.layer1.draw(this.ctx);
-        this.layer2.draw(this.ctx);
-        this.layer3.draw(this.ctx);
-        this.layer4.draw(this.ctx);
+        this.background.draw(this.ctx);
 
         this.platformManager.draw(this.ctx);
         this.drawGround(this.ctx);
@@ -455,10 +446,12 @@ export class GameEngine {
             console.error(`Level ${levelId} not found!`);
             return false;
         }
+
+        const level = this.levelManager.getCurrentLevel();
+        this.background = new Background(level.layers, this.canvas);
         
         this.originalEnemies = JSON.parse(JSON.stringify(this.levelManager.getEnemies()));
         this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
-        this.originalLayerEnemies = JSON.parse(JSON.stringify(this.levelManager.getLayerEnemies()));
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
 
@@ -490,9 +483,6 @@ export class GameEngine {
             this.levelManager.setPlatforms(JSON.parse(JSON.stringify(this.originalWholePlatforms)));
             this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         }
-        if (this.originalLayerEnemies.length > 0) {
-            this.levelManager.setLayerEnemies(JSON.parse(JSON.stringify(this.originalLayerEnemies)));
-        }
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
@@ -518,7 +508,6 @@ export class GameEngine {
         }
         
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
     
         this.gameRunning = wasRunning;
     }

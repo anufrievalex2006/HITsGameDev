@@ -142,11 +142,3 @@ body, html {
     margin-top: 30px;
     max-width: 600px;
 }
-
-
-#cloudLayer,
-#layer2,
-#layer3,
-#layer4{
-    display: none;
-}

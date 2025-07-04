@@ -345,7 +345,8 @@ export class LevelGenerator {
             spawn: config.spawn,
             platforms: platforms,
             enemies: enemies,
-            collectibles: collectibles
+            collectibles: collectibles,
+            layers: config.layers
         };
     }
 
