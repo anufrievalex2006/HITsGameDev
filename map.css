@@ -31,6 +31,17 @@ body, html {
     }
 }
 
+@keyframes cutsceneFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 .levelBtn {
     position: absolute;
     width: 20px;
@@ -107,4 +118,95 @@ body, html {
 
 .tooltip-content {
     line-height: 1.4;
+}
+
+#cutsceneScreen {
+    background: black;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+    z-index: 10000;
+}
+
+#cutsceneScreen.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#cutsceneVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    outline: none;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.3s;
+    z-index: 10001;
+}
+
+#cutsceneVideo.show {
+    opacity: 1;
+}
+
+#cutsceneVideo::-webkit-media-controls {
+    display: none !important;
+}
+
+#cutsceneVideo::-webkit-media-controls-panel {
+    display: none !important;
+}
+
+#cutsceneVideo::-webkit-media-controls-play-button {
+    display: none !important;
+}
+
+#cutsceneVideo::-webkit-media-controls-start-playback-button {
+    display: none !important;
+}
+
+#cutsceneControls {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s;
+    z-index: 10002;
+}
+
+#cutsceneControls.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#cutsceneControls .btn {
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.3);
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#cutsceneControls .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255,255,255,0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+#cutsceneControls .btn:active {
+    transform: translateY(0);
 }

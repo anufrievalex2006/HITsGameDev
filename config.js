@@ -21,7 +21,7 @@ export const config = {
     enemies: {
         stone: {
             sprite: {
-                src: "stone.png",
+                src: "Images/Enemies/stone.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
@@ -32,9 +32,9 @@ export const config = {
         },
         nazgul: {
             sprite: {
-                src: "nazgul.png",
-                frameWidth: 600,
-                frameHeight: 242,
+                src: "Images/Enemies/bird.png",
+                frameWidth: 1085,
+                frameHeight: 860,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -43,7 +43,7 @@ export const config = {
         },
         branch: {
             sprite: {
-                src: "branch.png",
+                src: "Images/Enemies/branch.png",
                 frameWidth: 1158,
                 frameHeight: 930,
                 framesPerRow: 1,
@@ -52,33 +52,22 @@ export const config = {
                 animationSpeed: 250
             }
         },
-        tree: {
+        hitdown: {
             sprite: {
-                src: "tree.png",
-                frameWidth: 370,
-                frameHeight: 343,
+                src: "Images/Enemies/villager.png",
+                frameWidth: 1024,
+                frameHeight: 1536,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
                 animationSpeed: 250
             }
         },
-        bush: {
+        boss: {
             sprite: {
-                src: "bush.png",
-                frameWidth: 692,
-                frameHeight: 614,
-                framesPerRow: 1,
-                rows: 1,
-                frames: 1,
-                animationSpeed: 250
-            }
-        },
-        clother: {
-            sprite: {
-                src: "clothers.png",
-                frameWidth: 1374,
-                frameHeight: 746,
+                src: "Images/Enemies/boss.png",
+                frameWidth: 1457,
+                frameHeight: 834,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -91,7 +80,7 @@ export const config = {
         height: 150,
         speedUp: {
             sprite: {
-                src: "speedUp.png",
+                src: "Images/Enemies/speedUp.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
@@ -102,7 +91,7 @@ export const config = {
         },
         speedDown: {
             sprite: {
-                src: "speedDown.png",
+                src: "Images/Enemies/speedDown.png",
                 frameWidth: 600,
                 frameHeight: 502,
                 framesPerRow: 1,
@@ -121,6 +110,15 @@ export const config = {
     platform: {
         segmentWidth: 100,
         segmentHeight: 20,
+        sprite: {
+                src: "Images/platform.png",
+                frameWidth: 1292,
+                frameHeight: 1024,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
     },
     colors: {
         background: "white",

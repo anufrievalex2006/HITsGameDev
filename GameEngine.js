@@ -4,24 +4,19 @@ import { Player } from "./Player.js";
 import { Platform } from "./Platform.js";
 import { LevelManager } from './LevelManager.js';
 import { EntityManager } from "./EntityManager.js";
-import { Layer } from "./Layer.js"
+import { Background } from "./Background.js";
 
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
+import { HitDownEnemy } from "./Enemy/HitDownEnemy.js"
 import { Branch } from './Enemy/Branch.js';
 import { BossEnemy } from './Enemy/Boss.js';
-
-import { BulletEnemy } from './Enemy/Bullet.js';
-
-import { Tree } from './Enemy/LayerEnemy/Tree.js';
-import { Bush } from './Enemy/LayerEnemy/Bush.js';
-import { Clother } from './Enemy/LayerEnemy/Clother.js';
 
 import { SpeedUp } from './Collectible/SpeedUp.js';
 import { SpeedDown } from './Collectible/SpeedDown.js';
 
 export class GameEngine {
-    constructor(canvas, levels) {
+    constructor(canvas, levels, levelConfigs = null) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.player = null;
@@ -31,8 +26,8 @@ export class GameEngine {
         this.platformManager = new EntityManager();
         this.enemyManager = new EntityManager();
         this.collectibleManager = new EntityManager();
-        this.layerEnemyManager = new EntityManager();
         this.levelManager = new LevelManager(levels);
+        this.levelConfigs = levelConfigs;
         this.score = 0;
         this.speed = config.obstacles.initialSpeed;
         this.gameRunning = false;
@@ -47,10 +42,7 @@ export class GameEngine {
         this.scale1 = Math.min(this.canvas.width/735, this.canvas.height/414);
         this.scale2 = Math.min(this.canvas.width/1920, this.canvas.height/1080);
 
-        this.layer1 = new Layer(document.getElementById('cloudLayer'), 735, 414, this.scale1);
-        this.layer2 = new Layer(document.getElementById('layer2'), 1920, 1080, this.scale2);
-        this.layer3 = new Layer(document.getElementById('layer3'), 1920, 1080, this.scale2);
-        this.layer4 = new Layer(document.getElementById('layer4'), 1920, 1080, this.scale2);
+        this.background = null;
 
         this.lastEPressTime = 0;
         this.ePressDelay = 1000;
@@ -71,14 +63,11 @@ export class GameEngine {
             if (e.key === " " && this.gameRunning) {
                 this.player?.jump();
             }
+            if ((e.key === "w" || e.key === "ц") && this.gameRunning) {
+                this.player?.changeShootType();
+            }
             if ((e.key === "q" || e.key === "й") && this.gameRunning) {
-                const screenX = 80;
-                let enemy = new BulletEnemy(
-                            screenX,
-                            this.player?.y,
-                            {type: "Bullet", speed: -5}
-                        );
-                this.enemyManager.addInStart(enemy)
+                this.player?.shoot(this.enemyManager);
             }
             if ((e.key === "e" || e.key === "у") && this.gameRunning) {
                 const currentTime = performance.now();
@@ -132,45 +121,6 @@ export class GameEngine {
         });
     }
 
-    drawGround(ctx) {
-        if (!this.groundImage) {
-            this.groundImage = new Image();
-            this.groundImage.src = 'ground.png';
-        }
-
-        const groundLevel = this.canvas.height;
-
-        if (this.groundImage.complete) {
-            const pattern = ctx.createPattern(this.groundImage, 'repeat');
-            ctx.fillStyle = pattern;
-
-            this.wholePlatforms.forEach(platform => {
-                const platformBottom = platform.y + config.platform.segmentHeight;
-                if (platformBottom < groundLevel) {
-                    ctx.fillRect(
-                        platform.x,
-                        platformBottom,
-                        platform.width,
-                        groundLevel - platformBottom
-                    );
-                }
-            });
-        } else {
-            ctx.fillStyle = '#5C4033';
-            this.wholePlatforms.forEach(platform => {
-                const platformBottom = platform.y + config.platform.segmentHeight;
-                if (platformBottom < groundLevel) {
-                    ctx.fillRect(
-                        platform.x,
-                        platformBottom,
-                        platform.width,
-                        groundLevel - platformBottom
-                    );
-                }
-            });
-        }
-    }
-
     spawnEnemy() {
         const enemies = this.levelManager.getEnemies();
         const viewportEnd = this.levelDistance + this.canvas.width;
@@ -203,6 +153,16 @@ export class GameEngine {
                         enemy = new Branch(
                             screenX,
                             0,
+                            enemyData
+                        );
+                        break;
+                    case 'Hitdown':
+                        const platHitdown = this.findWholePlatformForEnemy(enemyData.x);
+                        if (!platHitdown)
+                            return;
+                        enemy = new HitDownEnemy(
+                            screenX,
+                            platHitdown.y - 85,
                             enemyData
                         );
                         break;
@@ -276,71 +236,6 @@ export class GameEngine {
         });
     }
 
-    spawnLayerEnemy() {
-        const enemies = this.levelManager.getLayerEnemies();
-        const viewportEnd = this.levelDistance + this.canvas.width;
-
-        enemies.forEach(enemyData => {
-            if (!enemyData.spawned && enemyData.x <= viewportEnd + 200) {
-                const screenX = enemyData.x - this.levelDistance + this.canvas.width;
-
-                let enemy;
-                const plat = this.findWholePlatformForEnemy(enemyData.x);
-                switch (enemyData.type) {
-                    case 'Tree':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Tree(
-                            screenX,
-                            plat.y - 500,
-                            enemyData
-                        );
-                        break;
-                    case 'Bush':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Bush(
-                            screenX,
-                            plat.y - 30,
-                            enemyData
-                        );
-                        break;
-                    case 'Clother':
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Clother(
-                            screenX,
-                            plat.y - 80,
-                            enemyData
-                        );
-                        break;
-                    default:
-                        if (!plat) {
-                            return;
-                        }
-                        enemy = new Tree(
-                            screenX,
-                            enemyData.y,
-                            enemyData
-                        );
-                }
-
-                enemy.originalX = enemyData.x;
-                const platform = this.findWholePlatformForEnemy(enemy.originalX);
-                if (platform) {
-                    enemy.boundPlatform = platform;
-                    if (enemyData.relativeSpeed === undefined)
-                        enemy.relativeSpeed = 0;
-                }
-                this.layerEnemyManager.add(enemy);
-                enemyData.spawned = true;
-            }
-        });
-    }
-
     findWholePlatformForEnemy(enemyX) {
         for (const platform of this.wholePlatforms) {
             if (enemyX >= platform.x && enemyX <= platform.x + platform.width) {
@@ -358,12 +253,8 @@ export class GameEngine {
             this.isSpeedBoosted = false;
         }
         
-        this.layer1.update(1);
-        this.layer2.update(1.25);
-        this.layer3.update(1.5);
-        this.layer4.update(1.75);
+        this.background.update(1);
 
-        this.layerEnemyManager.update(this.speed)
         this.player.update(this.platformManager.entities, this.speed);
         this.platformManager.update(this.speed);
         this.enemyManager.update(this.speed, this.player.x);
@@ -378,7 +269,6 @@ export class GameEngine {
         }
         this.levelDistance += this.speed;
 
-        this.spawnLayerEnemy();
         this.spawnEnemy();
         this.spawnCollectible();
         this.checkCollisions();
@@ -388,14 +278,9 @@ export class GameEngine {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.layer1.draw(this.ctx);
-        this.layer2.draw(this.ctx);
-        this.layer3.draw(this.ctx);
-        this.layer4.draw(this.ctx);
+        this.background.draw(this.ctx);
 
-        this.layerEnemyManager.draw(this.ctx);
         this.platformManager.draw(this.ctx);
-        this.drawGround(this.ctx);
         this.enemyManager.draw(this.ctx);
         this.collectibleManager.draw(this.ctx);
         if (this.player) {
@@ -430,7 +315,7 @@ export class GameEngine {
             this.enemyManager.entities.forEach(enemy => {
                 if(enemy.type != "Boss" && enemy.type === "Bullet"){
                     if(this.isColliding(enemy, boss) && !enemy.hitBoss){
-                        this.BossHP -= 10;
+                        this.BossHP -= enemy.damage;
                         enemy.hitBoss = true;
                         enemy.shouldRemove = true;
 
@@ -441,12 +326,29 @@ export class GameEngine {
                 }
             });
 
-            this.enemyManager.entities = this.enemyManager.entities.filter(e => !e.shouldRemove);
             if (this.BossHP <= 0) {
+                this.enemyManager.entities = this.enemyManager.entities.filter(e => !(e.type === "Bullet" && e.shouldRemove));
                 this.gameWin();
                 return;
             }
         }
+
+        const bullets = this.enemyManager.entities.filter(e => e.type === "Bullet" && !e.shouldRemove);
+        const hitdownEnemies = this.enemyManager.entities.filter(e => e.type === "Hitdown" && !e.shouldRemove);
+        bullets.forEach(bullet => {
+            hitdownEnemies.forEach(enemy => {
+                if (this.isColliding(bullet, enemy)) {
+                    if (enemy.takeDamage(bullet.damage)) {
+                        bullet.shouldRemove = true;
+                        this.score += 1;
+
+                        if (enemy.shouldRemove)
+                            this.score += 5;
+                    }
+                }
+            });
+        });
+        this.enemyManager.entities = this.enemyManager.entities.filter(e => !e.shouldRemove);
         
         this.enemyManager.entities.forEach(enemy => {
             if (this.isColliding(this.player, enemy) && enemy.type != "Bullet") {
@@ -505,10 +407,12 @@ export class GameEngine {
             console.error(`Level ${levelId} not found!`);
             return false;
         }
+
+        const level = this.levelManager.getCurrentLevel();
+        this.background = new Background(level.layers, this.canvas);
         
         this.originalEnemies = JSON.parse(JSON.stringify(this.levelManager.getEnemies()));
         this.originalWholePlatforms = JSON.parse(JSON.stringify(this.levelManager.getPlatforms()));
-        this.originalLayerEnemies = JSON.parse(JSON.stringify(this.levelManager.getLayerEnemies()));
         this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         this.resetLevel();
 
@@ -523,7 +427,6 @@ export class GameEngine {
             this.animationFrameId = null;
         }
 
-        this.layerEnemyManager.clear();
         this.enemyManager.clear();
         this.collectibleManager.clear();
         this.platformManager.clear();
@@ -541,9 +444,6 @@ export class GameEngine {
             this.levelManager.setPlatforms(JSON.parse(JSON.stringify(this.originalWholePlatforms)));
             this.wholePlatforms = JSON.parse(JSON.stringify(this.originalWholePlatforms));
         }
-        if (this.originalLayerEnemies.length > 0) {
-            this.levelManager.setLayerEnemies(JSON.parse(JSON.stringify(this.originalLayerEnemies)));
-        }
         this.generatePlatforms();
         
         const spawn = this.levelManager.getSpawnPoint();
@@ -557,19 +457,18 @@ export class GameEngine {
             currentLevel.enemies.forEach(enemy => {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
+                if (enemy.type === "Hitdown") {
+                    enemy.curHealth = 6;
+                    enemy.shouldRemove = false;
+                }
             });
             currentLevel.collectibles.forEach(enemy => {
-                enemy.spawned = false;
-                if (enemy.passed) enemy.passed = false;
-            });
-            currentLevel.layerEnemies.forEach(enemy => {
                 enemy.spawned = false;
                 if (enemy.passed) enemy.passed = false;
             });
         }
         
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.layer = new Layer(document.getElementById('cloudLayer'), 735, 414);
     
         this.gameRunning = wasRunning;
     }
@@ -670,11 +569,27 @@ export class GameEngine {
     gameWin() {
         this.gameRunning = false;
         const finalScore = this.score;
-        this.resetLevel();
-        alert(`Победа! Игра завершена. Счет: ${finalScore}`);
-        this.stop()
-        $("#gameScreen").hide();
-        $("#map").show();
+        const curLevelId = this.levelManager.getCurrentLevel()?.id;
+        this.stop();
+
+        if (curLevelId === 'moria' && this.levelConfigs && this.levelConfigs[curLevelId]?.endCutscene) {
+            alert(`Победа! Игра завершена. Счет: ${finalScore}`);
+            $("#gameScreen").hide();
+            if (typeof window.showEndCutscene === 'function')
+                setTimeout(() => {
+                    window.showEndCutscene(curLevelId);
+                }, 100);
+            else {
+                this.resetLevel();
+                $("#map").show();
+            }
+        }
+        else {
+            this.resetLevel();
+            alert(`Победа! Игра завершена. Счет: ${finalScore}`);
+            $("#gameScreen").hide();
+            $("#map").show();
+        }
     }
 
     findPlatformForEnemy(enemyX) {

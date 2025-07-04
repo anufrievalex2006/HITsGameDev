@@ -118,6 +118,39 @@ export class LevelGenerator {
             availablePlatforms.splice(platformIndex, 1);
         }
 
+        const kHitdowns = this.randomInt(
+            config.enemyConfig.hitdownEnemies.count.min,
+            config.enemyConfig.hitdownEnemies.count.max,
+            this.seed + 4000
+        );
+
+        for (let i = 0; i < kHitdowns; i++) {
+            if (availablePlatforms.length === 0) break;
+
+            const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 4100);
+            const platform = availablePlatforms[platformIndex];
+
+            const x = this.randomRange(
+                platform.x + platform.width * 0.3,
+                platform.x + platform.width * 0.7
+            );
+            const y = platform.y - 50;
+            const speed = this.randomRange(
+                config.enemyConfig.hitdownEnemies.speedRange.min,
+                config.enemyConfig.hitdownEnemies.speedRange.max,
+                this.seed + i + 4300
+            );
+            enemies.push({
+                type: "Hitdown",
+                x: x,
+                y: y,
+                speed: speed,
+                relativeSpeed: 2
+            });
+
+            availablePlatforms.splice(platformIndex, 1);
+        }
+
         enemies = enemies.sort((a, b) => a.x - b.x);
 
         const kBranchs = this.randomInt(
@@ -228,83 +261,6 @@ export class LevelGenerator {
         return enemies;
     }
 
-    generateLayer(config, platforms) {
-        const enemies = [];
-
-        const kTrees = this.randomInt(
-            config.layerConfig.tree.count.min,
-            config.layerConfig.tree.count.max,
-            this.seed + 2000
-        );
-
-        for (let i = 0; i < kTrees; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 2100)];
-            const x = this.randomRange(
-                platform.x + 20, 
-                platform.x + platform.width - 60,
-                this.seed + i + 2200
-            );
-            const y = platform.y - 40;
-
-            enemies.push({
-                type: "Tree",
-                x: x,
-                y: y,
-                speed: 0,
-                relativeSpeed: 0
-            });
-        }
-
-        const kBushs = this.randomInt(
-            config.layerConfig.bush.count.min,
-            config.layerConfig.bush.count.max,
-            this.seed + 3000
-        );
-
-        for (let i = 0; i < kBushs; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
-            const x = this.randomRange(
-                platform.x + 20, 
-                platform.x + platform.width - 60,
-                this.seed + i + 3200
-            );
-            const y = platform.y - 40;
-
-            enemies.push({
-                type: "Bush",
-                x: x,
-                y: y,
-                speed: 0,
-                relativeSpeed: 0
-            });
-        }
-
-        const kClothers = this.randomInt(
-            config.layerConfig.bush.count.min,
-            config.layerConfig.bush.count.max,
-            this.seed + 3000
-        );
-
-        for (let i = 0; i < kClothers; i++) {
-            const platform = platforms[this.randomInt(0, platforms.length - 1, this.seed + i + 3100)];
-            const x = this.randomRange(
-                platform.x + 20, 
-                platform.x + platform.width - 60,
-                this.seed + i + 3200
-            );
-            const y = platform.y - 40;
-
-            enemies.push({
-                type: "Clother",
-                x: x,
-                y: y,
-                speed: 0,
-                relativeSpeed: 0
-            });
-        }
-        return enemies;
-    }
-
     generateCollectibles(config, platforms) {
         const collectibles = [];
         const minDistance = 150;
@@ -381,7 +337,6 @@ export class LevelGenerator {
         const platforms = this.generatePlatforms(config);
         const enemies = this.generateEnemies(config, platforms);
         const collectibles = this.generateCollectibles(config, platforms);
-        const layerEnemies = this.generateLayer(config, platforms);
 
         return {
             id: config.id,
@@ -391,7 +346,7 @@ export class LevelGenerator {
             platforms: platforms,
             enemies: enemies,
             collectibles: collectibles,
-            layerEnemies: layerEnemies
+            layers: config.layers
         };
     }
 

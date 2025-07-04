@@ -1,4 +1,5 @@
 import { config } from "./config.js";
+import { BulletEnemy } from './Enemy/Bullet.js';
 
 export class Player {
     constructor(x, y) {
@@ -8,6 +9,15 @@ export class Player {
         this.y = y;
         this.velocityY = 0;
         this.isJumping = false;
+        this.typeShoot = 1;
+        this.cntTypeShoot = 3;
+
+        this.lastShotTime = 0;
+        this.shootDelay = {
+            1: 0,
+            2: 350,
+            3: 400
+        };
 
         this.sprite = new Image();
         this.sprite.src = config.player.sprite.src;
@@ -87,6 +97,62 @@ export class Player {
         if (!this.isJumping) {
             this.velocityY = config.player.jumpForce;
             this.isJumping = true;
+        }
+    }
+
+    shoot(enemyManager) {
+        const currentTime = Date.now();
+        const delay = this.shootDelay[this.typeShoot];
+
+        if (this.typeShoot != 1 && currentTime - this.lastShotTime < delay) {
+            return false;
+        }
+
+        const screenX = this.x + 10;
+        let damage = 10;
+        if(this.typeShoot === 1){
+            damage = 10;
+        }else if(this.typeShoot === 2){
+            damage = 50;
+        }else if(this.typeShoot === 3){
+            damage = 35;
+        }
+
+        if (this.typeShoot === 3) {
+            let enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: -7 }
+            );
+            enemyManager.addInStart(enemy);
+            enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: 0 }
+            );
+            enemyManager.addInStart(enemy);
+            enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: 7 }
+            );
+            enemyManager.addInStart(enemy);
+        } else {
+            let enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage }
+            );
+            enemyManager.addInStart(enemy);
+        }
+        this.lastShotTime = currentTime;
+        return true;
+    }
+
+    changeShootType() {
+        this.typeShoot++;
+        if(this.typeShoot > this.cntTypeShoot){
+            this.typeShoot = 1;
         }
     }
 }
