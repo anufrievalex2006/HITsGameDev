@@ -99,6 +99,15 @@ export const config = {
     platform: {
         segmentWidth: 100,
         segmentHeight: 20,
+        sprite: {
+                src: "Images/platform.png",
+                frameWidth: 1536,
+                frameHeight: 1024,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
     },
     colors: {
         background: "white",

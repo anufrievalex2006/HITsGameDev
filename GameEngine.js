@@ -120,45 +120,6 @@ export class GameEngine {
         });
     }
 
-    drawGround(ctx) {
-        if (!this.groundImage) {
-            this.groundImage = new Image();
-            this.groundImage.src = 'ground.png';
-        }
-
-        const groundLevel = this.canvas.height;
-
-        if (this.groundImage.complete) {
-            const pattern = ctx.createPattern(this.groundImage, 'repeat');
-            ctx.fillStyle = pattern;
-
-            this.wholePlatforms.forEach(platform => {
-                const platformBottom = platform.y + config.platform.segmentHeight;
-                if (platformBottom < groundLevel) {
-                    ctx.fillRect(
-                        platform.x,
-                        platformBottom,
-                        platform.width,
-                        groundLevel - platformBottom
-                    );
-                }
-            });
-        } else {
-            ctx.fillStyle = '#5C4033';
-            this.wholePlatforms.forEach(platform => {
-                const platformBottom = platform.y + config.platform.segmentHeight;
-                if (platformBottom < groundLevel) {
-                    ctx.fillRect(
-                        platform.x,
-                        platformBottom,
-                        platform.width,
-                        groundLevel - platformBottom
-                    );
-                }
-            });
-        }
-    }
-
     spawnEnemy() {
         const enemies = this.levelManager.getEnemies();
         const viewportEnd = this.levelDistance + this.canvas.width;
@@ -319,7 +280,6 @@ export class GameEngine {
         this.background.draw(this.ctx);
 
         this.platformManager.draw(this.ctx);
-        this.drawGround(this.ctx);
         this.enemyManager.draw(this.ctx);
         this.collectibleManager.draw(this.ctx);
         if (this.player) {

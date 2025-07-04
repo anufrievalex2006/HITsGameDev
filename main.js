@@ -56,7 +56,7 @@ const levelConfigs = {
             {src: "/Images/layers/first_level/layer1.jpg", speed: 0.3},
             {src: "/Images/layers/first_level/layer2.png", speed: 0.5},
             {src: "/Images/layers/first_level/layer3.png", speed: 1},
-            {src: "/Images/layers/first_level/layer4.png", speed: 3}
+            {src: "/Images/layers/first_level/layer4.png", speed: 2}
         ]
     },
     moria: {
