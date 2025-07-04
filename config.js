@@ -32,9 +32,9 @@ export const config = {
         },
         nazgul: {
             sprite: {
-                src: "Images/Enemies/nazgul.png",
-                frameWidth: 600,
-                frameHeight: 242,
+                src: "Images/Enemies/bird.png",
+                frameWidth: 1085,
+                frameHeight: 860,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -55,8 +55,19 @@ export const config = {
         hitdown: {
             sprite: {
                 src: "Images/Enemies/villager.png",
-                frameWidth: 311,
-                frameHeight: 600,
+                frameWidth: 1024,
+                frameHeight: 1536,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
+        boss: {
+            sprite: {
+                src: "Images/Enemies/boss.png",
+                frameWidth: 1457,
+                frameHeight: 834,
                 framesPerRow: 1,
                 rows: 1,
                 frames: 1,
@@ -99,6 +110,15 @@ export const config = {
     platform: {
         segmentWidth: 100,
         segmentHeight: 20,
+        sprite: {
+                src: "Images/platform.png",
+                frameWidth: 1292,
+                frameHeight: 1024,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
     },
     colors: {
         background: "white",

@@ -4,7 +4,7 @@ export class HitDownEnemy {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 46.55;
+        this.width = 60;
         this.height = 90;
         this.type = data.type || 'Hitdown';
         this.passed = false;
@@ -95,20 +95,28 @@ export class HitDownEnemy {
 
             const sourceX = col * frameWidth;
             const sourceY = row * frameHeight;
+
+            ctx.save();
+
+            if (this.relativeSpeed < 0) {
+                ctx.translate(this.x + this.width, this.y);
+                ctx.scale(-1, 1);
+            } else {
+                ctx.translate(this.x, this.y);
+            }
+
             if (this.hitCooldown > 0) {
-                ctx.save();
-                ctx.globalAlpha = 0.5 + 0.5*Math.sin(Date.now() * 0.02);
+                ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() * 0.02);
             }
 
             ctx.drawImage(
                 this.sprite,
                 sourceX, sourceY, frameWidth, frameHeight,
-                this.x, this.y, this.width, this.height
+                0, 0, this.width, this.height
             );
-            if (this.hitCooldown > 0)
-                ctx.restore();
-        }
-        else {
+
+            ctx.restore();
+        } else {
             let color = 'orange';
             if (this.curHealth === 2) color = 'yellow';
             else if (this.curHealth === 1) color = 'red';
