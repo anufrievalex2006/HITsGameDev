@@ -161,7 +161,7 @@ export class GameEngine {
                             return;
                         enemy = new HitDownEnemy(
                             screenX,
-                            platHitdown.y - 50,
+                            platHitdown.y - 85,
                             enemyData
                         );
                         break;

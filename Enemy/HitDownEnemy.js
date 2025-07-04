@@ -4,7 +4,7 @@ export class HitDownEnemy {
     constructor(x, y, data) {
         this.x = x;
         this.y = y;
-        this.width = 46.55;
+        this.width = 60;
         this.height = 90;
         this.type = data.type || 'Hitdown';
         this.passed = false;
