@@ -10,12 +10,13 @@ export class Player {
         this.velocityY = 0;
         this.isJumping = false;
         this.typeShoot = 1;
-        this.cntTypeShoot = 2;
+        this.cntTypeShoot = 3;
 
         this.lastShotTime = 0;
         this.shootDelay = {
             1: 0,
-            2: 500
+            2: 350,
+            3: 400
         };
 
         this.sprite = new Image();
@@ -103,7 +104,7 @@ export class Player {
         const currentTime = Date.now();
         const delay = this.shootDelay[this.typeShoot];
 
-        if (this.typeShoot === 2 && currentTime - this.lastShotTime < delay) {
+        if (this.typeShoot != 1 && currentTime - this.lastShotTime < delay) {
             return false;
         }
 
@@ -113,13 +114,37 @@ export class Player {
             damage = 10;
         }else if(this.typeShoot === 2){
             damage = 50;
+        }else if(this.typeShoot === 3){
+            damage = 35;
         }
-        let enemy = new BulletEnemy(
-            screenX,
-            this.y,
-            { type: "Bullet", speed: -5, damage: damage }
-        );
-        enemyManager.addInStart(enemy)
+
+        if (this.typeShoot === 3) {
+            let enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: -7 }
+            );
+            enemyManager.addInStart(enemy);
+            enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: 0 }
+            );
+            enemyManager.addInStart(enemy);
+            enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage, ySpeed: 7 }
+            );
+            enemyManager.addInStart(enemy);
+        } else {
+            let enemy = new BulletEnemy(
+                screenX,
+                this.y,
+                { type: "Bullet", speed: -5, damage: damage }
+            );
+            enemyManager.addInStart(enemy);
+        }
         this.lastShotTime = currentTime;
         return true;
     }

@@ -7,11 +7,13 @@ export class BulletEnemy {
         this.type = data.type || 'Bullet';
         this.passed = false;
         this.speedModifier = data.speed || 1.0;
-        this.damage = data.damage || 10
+        this.damage = data.damage || 10,
+        this.ySpeed = data.ySpeed || 0
     }
 
     update(speed) {
         this.x -= speed * this.speedModifier;
+        this.y -= this.ySpeed;
     }
 
     draw(ctx) {
