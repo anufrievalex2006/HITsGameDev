@@ -122,13 +122,14 @@ body, html {
 
 #cutsceneScreen {
     background: black;
-    position: relative;
+    position: fixed;
     width: 100%;
     height: 100%;
     overflow: hidden;
     opacity: 0;
     transform: scale(0.95);
     transition: opacity 0.75s ease, transform 0.75s ease;
+    z-index: 10000;
 }
 
 #cutsceneScreen.show {
@@ -145,6 +146,7 @@ body, html {
     border: none;
     opacity: 0;
     transition: opacity 0.5s ease 0.3s;
+    z-index: 10001;
 }
 
 #cutsceneVideo.show {
@@ -175,6 +177,7 @@ body, html {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease 0.8s, transform 0.5s ease 0.8s;
+    z-index: 10002;
 }
 
 #cutsceneControls.show {

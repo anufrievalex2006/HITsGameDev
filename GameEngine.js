@@ -16,7 +16,7 @@ import { SpeedUp } from './Collectible/SpeedUp.js';
 import { SpeedDown } from './Collectible/SpeedDown.js';
 
 export class GameEngine {
-    constructor(canvas, levels) {
+    constructor(canvas, levels, levelConfigs = null) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.player = null;
@@ -27,6 +27,7 @@ export class GameEngine {
         this.enemyManager = new EntityManager();
         this.collectibleManager = new EntityManager();
         this.levelManager = new LevelManager(levels);
+        this.levelConfigs = levelConfigs;
         this.score = 0;
         this.speed = config.obstacles.initialSpeed;
         this.gameRunning = false;
@@ -608,11 +609,27 @@ export class GameEngine {
     gameWin() {
         this.gameRunning = false;
         const finalScore = this.score;
-        this.resetLevel();
-        alert(`Победа! Игра завершена. Счет: ${finalScore}`);
-        this.stop()
-        $("#gameScreen").hide();
-        $("#map").show();
+        const curLevelId = this.levelManager.getCurrentLevel()?.id;
+        this.stop();
+
+        if (curLevelId === 'moria' && this.levelConfigs && this.levelConfigs[curLevelId]?.endCutscene) {
+            alert(`Победа! Игра завершена. Счет: ${finalScore}`);
+            $("#gameScreen").hide();
+            if (typeof window.showEndCutscene === 'function')
+                setTimeout(() => {
+                    window.showEndCutscene(curLevelId);
+                }, 100);
+            else {
+                this.resetLevel();
+                $("#map").show();
+            }
+        }
+        else {
+            this.resetLevel();
+            alert(`Победа! Игра завершена. Счет: ${finalScore}`);
+            $("#gameScreen").hide();
+            $("#map").show();
+        }
     }
 
     findPlatformForEnemy(enemyX) {
