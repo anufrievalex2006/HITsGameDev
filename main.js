@@ -14,6 +14,9 @@ const levelConfigs = {
         width: 25000,
         difficulty: 1,
         theme: "hills",
+        cutscene: {
+            video: "cutscene1.mp4"
+        },
         platformConfig: {
             minWidth: 300,
             maxWidth: 600,
@@ -58,6 +61,9 @@ const levelConfigs = {
         width: 35000,
         difficulty: 2,
         theme: "cave",
+        cutscene: {
+            video: "cutscene2.mp4" // Сюда вторая кастсцена идёт
+        },
         platformConfig: {
             minWidth: 300,
             maxWidth: 600,
@@ -104,16 +110,138 @@ const levels = Object.keys(levelConfigs).map(id =>
 
 const game = new GameEngine(canvas, levels);
 
+let curLeveId = null;
+const cutsceneVideo = document.getElementById("cutsceneVideo");
+const cutsceneScreen = document.getElementById("cutsceneScreen");
+const cutsceneControls = document.getElementById("cutsceneControls");
+
+cutsceneVideo.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+});
+
+cutsceneVideo.addEventListener("click", (e) => {
+    e.preventDefault();
+});
+
 document.querySelectorAll(".levelBtn").forEach(button => {
     button.addEventListener("click", () => {
         const levelId = button.dataset.level;
-        game.stop();
+        curLeveId = levelId;
+        showCutscene(levelId);
+    });
+});
+
+function showCutscene(levelId) {
+    const levelConfig = levelConfigs[levelId];
+    if (!levelConfig || !levelConfig.cutscene || !levelConfig.cutscene.video) {
+        console.log("Нет кастсцены для уровня:", levelId);
+        startLevel(levelId);
+        return;
+    }
+
+    cutsceneVideo.src = levelConfig.cutscene.video;
+    cutsceneVideo.currentTime = 0;
+
+    const fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        opacity: 0;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    `;
+    document.body.appendChild(fadeOverlay);
+
+    setTimeout(() => {
+        fadeOverlay.style.opacity = '1';
+    }, 50);
+
+    setTimeout(() => {
+        $("#map").hide();
+        $("#cutsceneScreen").show();
+        cutsceneScreen.classList.add('show');
+
+        fadeOverlay.style.opacity = '0';
+        setTimeout(() => {
+            document.body.removeChild(fadeOverlay);
+        }, 200);
+
+        setTimeout(() => {
+            cutsceneVideo.classList.add('show');
+            cutsceneVideo.muted = false;
+            cutsceneVideo.play().catch(error => {
+                console.error("Ошибка воспроизведения: ", error);
+                startLevel(levelId);
+            });
+
+            setTimeout(() => {
+                cutsceneControls.classList.add('show');
+            }, 100);
+        }, 50);
+    }, 200);
+}
+
+function startLevel(levelId) {
+    const fadeOverlay = document.createElement('div');
+    fadeOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        opacity: 0;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    `;
+    document.body.appendChild(fadeOverlay);
+    setTimeout(() => {
+        fadeOverlay.style.opacity = '1';
+    }, 50);
+
+    cutsceneScreen.classList.remove('show');
+    cutsceneVideo.classList.remove('show');
+    cutsceneControls.classList.remove('show');
+
+    cutsceneVideo.pause();
+    cutsceneVideo.currentTime = 0;
+
+    game.stop();
+
+    setTimeout(() => {
         if (game.loadLevel(levelId)) {
-            $("#map").hide();
+            $("#cutsceneScreen").hide();
             $("#gameScreen").show();
+
+            fadeOverlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(fadeOverlay);
+            }, 300);
             game.start();
         }
-    });
+    }, 400);
+}
+
+cutsceneVideo.addEventListener("ended", () => {
+    if (curLeveId)
+        startLevel(curLeveId);
+});
+
+document.getElementById("skip").addEventListener("click", () => {
+    if (curLeveId)
+        startLevel(curLeveId);
+});
+
+cutsceneVideo.addEventListener("error", (e) => {
+    console.error("Ошибка загрузки видео: ", e);
+    if (curLeveId)
+        startLevel(curLeveId);
 });
 
 document.getElementById("backFromGame").addEventListener("click", () => {
