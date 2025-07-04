@@ -10,6 +10,7 @@ export class Player {
         this.velocityY = 0;
         this.isJumping = false;
         this.typeShoot = 1;
+        this.cntTypeShoot = 2;
 
         this.lastShotTime = 0;
         this.shootDelay = {
@@ -125,7 +126,7 @@ export class Player {
 
     changeShootType() {
         this.typeShoot++;
-        if(this.typeShoot >= 3){
+        if(this.typeShoot > this.cntTypeShoot){
             this.typeShoot = 1;
         }
     }
