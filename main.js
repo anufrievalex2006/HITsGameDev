@@ -28,7 +28,7 @@ function initBackgroundMusic() {
     else backgroundMusic.volume = 0.3;
 
     backgroundMusic.addEventListener('ended', function() {
-        if (!musicUserPaused) {
+        if (!musicUserPaused && isMusicPlaying) {
             this.currentTime = 0;
             this.play().catch(e => {
                 console.log("Ошибка воспроизведения: ", e);
@@ -46,7 +46,6 @@ function initBackgroundMusic() {
         isMusicPlaying = true;
         updateMusicButton();
     });
-    tryPlayMusic();
 }
 
 function tryPlayMusic() {
@@ -265,20 +264,6 @@ const cutsceneControls = document.getElementById("cutsceneControls");
 document.addEventListener('DOMContentLoaded', function() {
     initBackgroundMusic();
     createMusicToggleButton();
-    
-    document.addEventListener('click', function(e) {
-        if (e.target.id !== 'musicToggle') {
-            tryPlayMusic();
-        }
-    }, { once: true });
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.key !== ' ' || !musicUserPaused) {
-            tryPlayMusic();
-        }
-    }, { once: true });
-    
-    document.addEventListener('touchstart', tryPlayMusic, { once: true });
 });
 
 cutsceneVideo.addEventListener("contextmenu", (e) => {
