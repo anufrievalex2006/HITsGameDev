@@ -5,6 +5,129 @@ const canvas = document.getElementById("gameCanvas");
 canvas.width = 800;
 canvas.height = 400;
 
+let backgroundMusic;
+let isMusicPlaying = false;
+let musicUserPaused = false;
+
+function initBackgroundMusic() {
+    backgroundMusic = document.getElementById("backgroundMusic");
+    if (!backgroundMusic) {
+        backgroundMusic = document.createElement('audio');
+        backgroundMusic.id = 'backgroundMusic';
+        backgroundMusic.preload = 'auto';
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.3;
+        
+        const source = document.createElement('source');
+        source.src = 'media.mp3';
+        source.type = 'audio/mpeg';
+        backgroundMusic.appendChild(source);
+        
+        document.body.appendChild(backgroundMusic);
+    }
+    else backgroundMusic.volume = 0.3;
+
+    backgroundMusic.addEventListener('ended', function() {
+        if (!musicUserPaused) {
+            this.currentTime = 0;
+            this.play().catch(e => {
+                console.log("Ошибка воспроизведения: ", e);
+            });
+        }
+    });
+    backgroundMusic.addEventListener('error', function(e) {
+        console.log('Ошибка загрузки аудио:', e);
+    });
+    backgroundMusic.addEventListener('pause', function() {
+        isMusicPlaying = false;
+        updateMusicButton();
+    });
+    backgroundMusic.addEventListener('play', function() {
+        isMusicPlaying = true;
+        updateMusicButton();
+    });
+    tryPlayMusic();
+}
+
+function tryPlayMusic() {
+    if (!isMusicPlaying && !musicUserPaused && backgroundMusic) {
+        backgroundMusic.play().then(() => {
+            isMusicPlaying = true;
+            updateMusicButton();
+        }).catch(e => {
+            console.log('Автовоспроизведение заблокировано браузером');
+        });
+    }
+}
+
+function toggleMusic() {
+    if (!backgroundMusic) return;
+    
+    if (isMusicPlaying) {
+        backgroundMusic.pause();
+        musicUserPaused = true;
+        isMusicPlaying = false;
+    } else {
+        musicUserPaused = false;
+        backgroundMusic.play().then(() => {
+            isMusicPlaying = true;
+        }).catch(e => {
+            console.log('Ошибка воспроизведения:', e);
+        });
+    }
+    updateMusicButton();
+}
+
+function updateMusicButton() {
+    const musicBtn = document.getElementById('musicToggle');
+    if (musicBtn) {
+        musicBtn.textContent = isMusicPlaying ? '🔊' : '🔇';
+        musicBtn.title = isMusicPlaying ? 'Выключить музыку' : 'Включить музыку';
+    }
+}
+
+function createMusicToggleButton() {
+    const musicBtn = document.createElement('button');
+    musicBtn.id = 'musicToggle';
+    musicBtn.className = 'music-toggle-btn';
+    musicBtn.textContent = '🔊';
+    musicBtn.title = 'Управление музыкой';
+    musicBtn.style.cssText = `
+        position: fixed;
+        bottom: 80px;
+        left: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.8);
+        color: #ffcc00;
+        border: 2px solid #444;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 1001;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    `;
+    
+    musicBtn.addEventListener('mouseenter', function() {
+        this.style.background = 'rgba(0, 0, 0, 0.9)';
+        this.style.borderColor = '#ffcc00';
+        this.style.transform = 'scale(1.1)';
+    });
+    
+    musicBtn.addEventListener('mouseleave', function() {
+        this.style.background = 'rgba(0, 0, 0, 0.8)';
+        this.style.borderColor = '#444';
+        this.style.transform = 'scale(1)';
+    });
+    
+    musicBtn.addEventListener('click', toggleMusic);
+    document.body.appendChild(musicBtn);
+}
+
 const levelConfigs = {
     weather_hills: {
         id: "weather_hills",
@@ -130,6 +253,25 @@ let curLeveId = null;
 const cutsceneVideo = document.getElementById("cutsceneVideo");
 const cutsceneScreen = document.getElementById("cutsceneScreen");
 const cutsceneControls = document.getElementById("cutsceneControls");
+
+document.addEventListener('DOMContentLoaded', function() {
+    initBackgroundMusic();
+    createMusicToggleButton();
+    
+    document.addEventListener('click', function(e) {
+        if (e.target.id !== 'musicToggle') {
+            tryPlayMusic();
+        }
+    }, { once: true });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== ' ' || !musicUserPaused) {
+            tryPlayMusic();
+        }
+    }, { once: true });
+    
+    document.addEventListener('touchstart', tryPlayMusic, { once: true });
+});
 
 cutsceneVideo.addEventListener("contextmenu", (e) => {
     e.preventDefault();

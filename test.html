@@ -12,6 +12,11 @@
     </style>
 </head>
 <body>
+    <audio id="backgroundMusic" preload="auto" loop>
+        <source src="media.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио!
+    </audio>
+
     <div id="mainMenu" class="screen">
         <button id="playBtn" class="btn">ИГРАТЬ</button>
     </div>
@@ -64,6 +69,8 @@
             <span class="action">Прыжок</span>
         </div>
     </div>
+
+    <button id="musicToggle" class="music-toggle-btn">🔊</button>
 
     <script src="map.js"></script>
     <script type="module" src="main.js"></script>
