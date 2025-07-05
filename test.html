@@ -44,7 +44,8 @@
         <canvas id="gameCanvas"></canvas>
     </div>
 
-    <div class="controls-info">
+    <button id="toggleControls" class="toggle-controls-btn">?</button>
+    <div class="controls-info" id="controlsInfo">
         <h4>Управление</h4>
         <div class="control-item">
             <span class="key">Q</span>
@@ -66,5 +67,21 @@
 
     <script src="map.js"></script>
     <script type="module" src="main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            const controlsInfo = $('#controlsInfo');
+            const toggleBtn = $('#toggleControls');
+
+            controlsInfo.addClass('hidden');
+            toggleBtn.click(function() {
+                controlsInfo.toggleClass('hidden');
+                if (controlsInfo.hasClass('hidden'))
+                    toggleBtn.text("?");
+                else
+                    toggleBtn.text("x");
+            });
+        });
+    </script>
 </body>
 </html>
