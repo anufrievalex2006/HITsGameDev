@@ -4,7 +4,7 @@ const startWidthMap = 736;
 const startHeightMap = 552;
 const levelBtns = [
     { id: 'firstLevelBtn', startX: 188, startY: 152, text: "1" },
-    { id: 'secondLevelBtn', startX: 336, startY: 215, text: "2" }
+    { id: 'secondLevelBtn', startX: 580, startY: 370, text: "2" }
 ];
 
 function updateAllButtons() {

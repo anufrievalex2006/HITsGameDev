@@ -9,6 +9,7 @@ import { Background } from "./Background.js";
 import { FlyingEnemy } from './Enemy/FlyingEnemy.js';
 import { StoneEnemy } from './Enemy/StoneEnemy.js';
 import { HitDownEnemy } from "./Enemy/HitDownEnemy.js"
+import { Archer } from "./Enemy/Archer.js"
 import { Branch } from './Enemy/Branch.js';
 import { BossEnemy } from './Enemy/Boss.js';
 
@@ -163,6 +164,16 @@ export class GameEngine {
                         enemy = new HitDownEnemy(
                             screenX,
                             platHitdown.y - 85,
+                            enemyData
+                        );
+                        break;
+                    case 'Archer':
+                        const platform = this.findWholePlatformForEnemy(enemyData.x);
+                        if (!platform)
+                            return;
+                        enemy = new Archer(
+                            screenX,
+                            platform.y - 85,
                             enemyData
                         );
                         break;
