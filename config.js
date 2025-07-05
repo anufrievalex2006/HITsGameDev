@@ -63,6 +63,17 @@ export const config = {
                 animationSpeed: 250
             }
         },
+        archer: {
+            sprite: {
+                src: "Images/Enemies/archer.png",
+                frameWidth: 915,
+                frameHeight: 1342,
+                framesPerRow: 1,
+                rows: 1,
+                frames: 1,
+                animationSpeed: 250
+            }
+        },
         boss: {
             sprite: {
                 src: "Images/Enemies/boss.png",
