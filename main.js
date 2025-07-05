@@ -40,6 +40,10 @@ const levelConfigs = {
                 count: { min: 5, max: 10 },
                 speedRange: { min: 1.0, max: 1.5 }
             },
+            archerEnemies: {
+                count: { min: 0, max: 0 },
+                speedRange: { min: 1.0, max: 1.5 }
+            },
             branch: {
                 count: { min: 4, max: 13 },
             }
@@ -95,6 +99,10 @@ const levelConfigs = {
             hitdownEnemies: {
                 count: { min: 10, max: 16 },
                 speedRange: { min: 1.2, max: 1.8 }
+            },
+            archerEnemies: {
+                count: { min: 5, max: 10 },
+                speedRange: { min: 1.0, max: 1.5 }
             },
             branch: {
                 count: { min: 4, max: 13 },

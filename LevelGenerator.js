@@ -153,6 +153,46 @@ export class LevelGenerator {
 
         enemies = enemies.sort((a, b) => a.x - b.x);
 
+
+
+        const kArchers = this.randomInt(
+            config.enemyConfig.archerEnemies.count.min,
+            config.enemyConfig.archerEnemies.count.max,
+            this.seed + 7000
+        );
+
+        for (let i = 0; i < kArchers; i++) {
+            if (availablePlatforms.length === 0) break;
+
+            const platformIndex = this.randomInt(0, availablePlatforms.length - 1, this.seed + i + 7100);
+            const platform = availablePlatforms[platformIndex];
+
+            const x = this.randomRange(
+                platform.x + platform.width * 0.3,
+                platform.x + platform.width * 0.7
+            );
+            const y = platform.y - 50;
+            const speed = this.randomRange(
+                config.enemyConfig.archerEnemies.speedRange.min,
+                config.enemyConfig.archerEnemies.speedRange.max,
+                this.seed + i + 7300
+            );
+            enemies.push({
+                type: "Archer",
+                x: x,
+                y: y,
+                speed: speed,
+                relativeSpeed: 2
+            });
+
+            availablePlatforms.splice(platformIndex, 1);
+        }
+
+        enemies = enemies.sort((a, b) => a.x - b.x);
+
+
+
+
         const kBranchs = this.randomInt(
             config.enemyConfig.branch.count.min,
             config.enemyConfig.branch.count.max,
