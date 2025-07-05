@@ -211,9 +211,41 @@ body, html {
     transform: translateY(0);
 }
 
-.controls-info {
+.toggle-controls-btn {
     position: fixed;
     bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffcc00;
+    border: 2px solid #444;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-controls-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: #ffcc00;
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-controls-btn:active {
+    transform: scale(0.95);
+}
+
+.controls-info {
+    position: fixed;
+    bottom: 80px;
     right: 20px;
     background: rgba(0, 0, 0, 0.8);
     color: white;
@@ -225,6 +257,17 @@ body, html {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     min-width: 300px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.controls-info.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    pointer-events: none;
 }
 
 .controls-info h4 {
