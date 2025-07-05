@@ -30,6 +30,8 @@
     <div id="cutsceneScreen" class="screen">
         <video id="cutsceneVideo">
             <source src="cutscene1.mp4" type="video/mp4">
+            <source src="cutscene2.mp4" type="video/mp4">
+            <source src="cutscene3.mp4" type="video/mp4">
             Ваш браузер не поддерживает видео!
         </video>
         <div id="cutsceneControls">
@@ -40,6 +42,26 @@
     <div id="gameScreen" class="screen">
         <button id="backFromGame" class="back-btn">← МЕНЮ</button>
         <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <div class="controls-info">
+        <h4>Управление</h4>
+        <div class="control-item">
+            <span class="key">Q</span>
+            <span class="action">Стрельба</span>
+        </div>
+        <div class="control-item">
+            <span class="key">W</span>
+            <span class="action">Смена типа оружия</span>
+        </div>
+        <div class="control-item">
+            <span class="key">E</span>
+            <span class="action">Ускорение</span>
+        </div>
+        <div class="control-item">
+            <span class="key">Пробел</span>
+            <span class="action">Прыжок</span>
+        </div>
     </div>
 
     <script src="map.js"></script>
